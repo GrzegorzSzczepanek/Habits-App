@@ -53,10 +53,9 @@ def add_yes_no_objective():
     name_entry = Entry(select_type_window).grid(row=0, column=1)
     question_entry = Entry(select_type_window).grid(row=1, column=1)
     # frequency_frame = Frame(select_type_window).grid(row=2, column=1)
-    Radiobutton(select_type_window, text="Everyday", value="everyday", variable=period_variable1).pack()
-    Radiobutton(select_type_window, text="Weekly", value="everyday", variable=period_variable2).pack()
-    Radiobutton(select_type_window, text="Weekly", value="everyday", variable=period_variable3).pack()
-    
+    Radiobutton(select_type_window, text="Everyday", value="everyday", variable=period_variable1).grid(row=2) 
+    Radiobutton(select_type_window, text="Every other day", value="every other day", variable=period_variable2).grid(row=2) 
+    Radiobutton(select_type_window, text="Weekly", value="weekly", variable=period_variable3).grid(row=2) 
     
     remainder_entry = Entry(select_type_window).grid(row=3, column=1)
     
@@ -106,7 +105,7 @@ def create_saves_folder():
     else:
         check_path = os.path.join("C:\\", "HbtsApp")
         os.makedirs(check_path)
-        source_directory = filedialog.askdirectory(title="Selected Directory will be used t save your data and settings")
+        source_directory = filedialog.askdirectory(title="Selected Directory will be used to save your data and settings")
         path = os.path.join(source_directory, "Saves")
         os.makedirs(path)
     return path
