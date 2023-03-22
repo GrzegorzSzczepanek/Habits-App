@@ -39,3 +39,4 @@ settings_btn.pack(pady=20, padx=20)
 saves_path = create_saves_folder()
 
 window.mainloop()
+#2137
