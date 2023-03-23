@@ -4,7 +4,14 @@ from tkinter import messagebox
 from tkinter import filedialog
 from visual_effects import *
 
-entries = []
+# I need to extract data from OptionMenu and validate other data there.
+def print_input(*args):
+    for entry in entries:
+        if isinstance(entry, OptionMenu):
+            pass
+        else:
+            print(entry.get())
+
 
 # Done - It is meant just to create two buttons
 def create_starting_btns():
@@ -31,9 +38,12 @@ def add_objective():
     select_type_window = Toplevel()
     select_type_window.resizable(False, False)
     create_starting_btns()
+
+
 # correct frequency to radio or list type input with "everday, every second day and weekly" options
 # Mostly done
 def add_yes_no_objective():
+    global entries
     _button_list = select_type_window.winfo_children()
     _button_list[0].destroy()
     _button_list[1].destroy()
@@ -41,59 +51,74 @@ def add_yes_no_objective():
     labels = [
         Label(select_type_window,text="Name of task"),
         Label(select_type_window,text="Question"),
-        Label(select_type_window,text="Frequency per week"),
         Label(select_type_window,text="Remainder"),
-        Label(select_type_window,text="Notes")
+        Label(select_type_window,text="Notes"),
+        Label(select_type_window,text="Frequency per week")
     ]
     for i in range (0, len(labels)):
         labels[i].grid(row=i, column=0)
-    entries = [
-        EntryWithPlaceholder(select_type_window, "f.e Wake up at 7AM").grid(row=0, column=1),
-        EntryWithPlaceholder(select_type_window, "F.e. did you wake up early").grid(row=1, column=1),
-        EntryWithPlaceholder(select_type_window, "max 14 times per week").grid(row=2,column=1),
-        EntryWithPlaceholder(select_type_window, "18:00").grid(row=3, column=1),
-        EntryWithPlaceholder(select_type_window, "Any additional information").grid(row=4, column=1)
-    ]
 
-    Button(select_type_window, text="Back",command=get_back).grid(row=5, column=0)
+    options = [
+        "everyday",
+        "every other day",
+        "weekly"
+    ]
+    clicked = StringVar()
+    clicked.set( "everyday" )
+
+    entries = [
+        EntryWithPlaceholder(select_type_window, "f.e Wake up at 7AM"),
+        EntryWithPlaceholder(select_type_window, "F.e. did you wake up early"),
+        EntryWithPlaceholder(select_type_window, "18:00/None"),
+        EntryWithPlaceholder(select_type_window, "Any additional information"),
+        OptionMenu(select_type_window, clicked, *options)
+    ]
+    for i in range(0, len(entries)):
+        entries[i].grid(row=i, column=1)
+
+    Button(select_type_window, text="Back",command=get_back).grid(row=len(entries), column=0)
     Button(select_type_window, text="Add", command=print_input
-           ).grid(row=5, column=1)
+           ).grid(row=len(entries), column=1)
+
 
 # Mostly done - waits for validation
 def add_measurable_objective():
     _button_list = select_type_window.winfo_children()
     _button_list[0].destroy()
     _button_list[1].destroy()
+    global entries
 
     labels = [
         Label(select_type_window, text="Name of task"),
         Label(select_type_window, text="Question"),
-        Label(select_type_window,text="Frequency per week"),
         Label(select_type_window,text="Remainder"),
         Label(select_type_window,text="Notes"),
-        Label(select_type_window, text="Unin f.e kilometers")
+        Label(select_type_window, text="Unin f.e kilometers"),
+        Label(select_type_window,text="Frequency per week")
     ]
     for i in range (0, len(labels)):
         labels[i].grid(row=i, column=0)
 
+    options = [
+        "everyday",
+        "every other day",
+        "weekly"
+    ]
+    clicked = StringVar()
+    clicked.set( "everyday" )
     entries = [
         EntryWithPlaceholder(select_type_window, "f.e Read pages of the book"),
         EntryWithPlaceholder(select_type_window, "How many kilometers did you run?"),
-        EntryWithPlaceholder(select_type_window, "Max 7 times per week"),
-        EntryWithPlaceholder(select_type_window, "21:37"),
+        EntryWithPlaceholder(select_type_window, "21:37/None"),
         EntryWithPlaceholder(select_type_window, "Any info you find usefull"),
-        EntryWithPlaceholder(select_type_window, "f.e Kilometers")
+        EntryWithPlaceholder(select_type_window, "f.e Kilometers"),
+        OptionMenu(select_type_window, clicked, *options)
     ]
     for i in range(0, len(entries)):
         entries[i].grid(row=i,column=1)
     
-    Button(select_type_window, text="Back",command=get_back).grid(row=6, column=0)
-    Button(select_type_window, text="Add", command=print_input).grid(row=6, column=1)
-
-
-def print_input(*args):
-    for entry in entries:
-        print(entry.get())
+    Button(select_type_window, text="Back",command=get_back).grid(row=len(entries), column=0)
+    Button(select_type_window, text="Add", command=print_input).grid(row=len(entries), column=1)
 
 
 
