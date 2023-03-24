@@ -6,11 +6,37 @@ from visual_effects import *
 
 # I need to extract data from OptionMenu and validate other data there.
 def print_input(*args):
+    basic_values = [
+        'f.e Wake up at 7AM',
+        'F.e. did you wake up early',
+        '18:00/None',
+        'Any additional information',
+    ]
+    correct_values = [
+
+    ]
+    i = 0
     for entry in entries:
         if isinstance(entry, OptionMenu):
-            pass
-        else:
-            print(entry.get())
+            print(clicked.get())
+
+        elif entry.get() in basic_values:
+            messagebox.showerror('Incorrect values', 'You need to create your own objectives')
+            break
+
+        elif i == 1:
+            if entry.get()[-1] != "?":
+                entry = entry + "?"
+
+        elif i == 2:
+            if len(entry.get()) != 5 and entry.get() != "None":
+                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
+                break
+
+        correct_values.append(entry.get())
+        i += 1
+
+    print(correct_values)
 
 
 # Done - It is meant just to create two buttons
@@ -40,7 +66,6 @@ def add_objective():
     create_starting_btns()
 
 
-# correct frequency to radio or list type input with "everday, every second day and weekly" options
 # Mostly done
 def add_yes_no_objective():
     global entries
@@ -63,12 +88,14 @@ def add_yes_no_objective():
         "every other day",
         "weekly"
     ]
+    global clicked
     clicked = StringVar()
+
     clicked.set( "everyday" )
 
     entries = [
         EntryWithPlaceholder(select_type_window, "f.e Wake up at 7AM"),
-        EntryWithPlaceholder(select_type_window, "F.e. did you wake up early"),
+        EntryWithPlaceholder(select_type_window, "F.e. did you wake up early?"),
         EntryWithPlaceholder(select_type_window, "18:00/None"),
         EntryWithPlaceholder(select_type_window, "Any additional information"),
         OptionMenu(select_type_window, clicked, *options)
@@ -104,8 +131,9 @@ def add_measurable_objective():
         "every other day",
         "weekly"
     ]
+    global clicked
     clicked = StringVar()
-    clicked.set( "everyday" )
+    clicked.set("everyday")
     entries = [
         EntryWithPlaceholder(select_type_window, "f.e Read pages of the book"),
         EntryWithPlaceholder(select_type_window, "How many kilometers did you run?"),
