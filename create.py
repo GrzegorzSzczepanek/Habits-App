@@ -18,24 +18,23 @@ def print_input(*args):
     i = 0
     for entry in entries:
         if isinstance(entry, OptionMenu):
-            print(clicked.get())
+            correct_values.append(clicked.get())
 
         elif entry.get() in basic_values:
             messagebox.showerror('Incorrect values', 'You need to create your own objectives')
             break
 
-        elif i == 1:
-            if entry.get()[-1] != "?":
-                entry = entry + "?"
-
         elif i == 2:
-            if len(entry.get()) != 5 and entry.get() != "None":
+            if not (0 < int(entry.get().split(":")[0]) < 24 and 0 <= int(entry.get().split(":")[0]) < 60 and len(entry.get()) == 5 and entry.get() != "None"):
                 messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
                 break
 
-        correct_values.append(entry.get())
+        else:
+            correct_values.append(entry.get())
         i += 1
 
+    if basic_values[1][-1] != "?":
+        basic_values[1] = basic_values[1] + "?"
     print(correct_values)
 
 
