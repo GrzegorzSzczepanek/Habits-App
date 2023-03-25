@@ -17,19 +17,34 @@ def print_input(*args):
     ]
     i = 0
     for entry in entries:
+        print(entry)
         if isinstance(entry, OptionMenu):
             correct_values.append(clicked.get())
-
-        elif entry.get() in basic_values:
+        elif isinstance(entry, Entry) and entry.get() in basic_values:
             messagebox.showerror('Incorrect values', 'You need to create your own objectives')
             break
 
         elif i == 2:
-            if not (0 < int(entry.get().split(":")[0]) < 24 and 0 <= int(entry.get().split(":")[0]) < 60 and len(entry.get()) == 5 and entry.get() != "None"):
+            if entry.get().lower() == "none":
+                correct_values.append(entry.get().lower())
+            elif len(entry.get()) != 5:
                 messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
                 break
+            elif entry.get()[2] != ":":
+                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
+                break
+            elif not entry.get()[0] and entry.get()[1] and entry.get()[3] and entry.get()[4] in "0123456789":
+                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
+                break
+            elif not(0 < int(entry.get().split(":")[0]) < 24 and 0 <= int(entry.get().split(":")[0]) < 60):
+                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
+                break
+            else:
+                entries.append(entry.get())
+
 
         else:
+            print(entry)
             correct_values.append(entry.get())
         i += 1
 
@@ -199,12 +214,15 @@ def change_theme(current_theme):
 #     return path
 
 # this function sets the saves folder arbitraily  
-def create_saves_folder():
-    if os.path.isdir("C:\\HbtsApp"):
-        return 
-    else:
-        check_path = os.path.join("C:\\", "HbtsApp")
-        os.makedirs(check_path)
-        path = os.path.join(check_path, "Saves")
-        os.makedirs(path)
-    return path
+
+# currently doesn't work since I'm on linux
+
+# def create_saves_folder():
+#     if os.path.isdir("C:\\HbtsApp"):
+#         return 
+#     else:
+#         check_path = os.path.join("C:\\", "HbtsApp")
+#         os.makedirs(check_path)
+#         path = os.path.join(check_path, "Saves")
+#         os.makedirs(path)
+#     return path

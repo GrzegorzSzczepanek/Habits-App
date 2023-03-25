@@ -36,7 +36,7 @@ settings_btn.pack(pady=20, padx=20)
 
 
 # One way to check wheather user picked saves folder once
-create_saves_folder()
+#create_saves_folder()
 saves_path = "C:\\HbtsApp\\Saves"
 
 window.mainloop()
