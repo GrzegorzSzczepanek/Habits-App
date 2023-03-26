@@ -5,7 +5,10 @@ from tkinter import filedialog
 from visual_effects import *
 
 # I need to extract data from OptionMenu and validate other data there.
-def print_input(*args):
+def use_input(*args):
+    # this string is used in validation as a regex
+    n = "0123456789"  
+
     basic_values = [
         'f.e Wake up at 7AM',
         'F.e. did you wake up early',
@@ -24,6 +27,7 @@ def print_input(*args):
             messagebox.showerror('Incorrect values', 'You need to create your own objectives')
             break
 
+# validation for hour input
         elif i == 2:
             if entry.get().lower() == "none":
                 correct_values.append(entry.get().lower())
@@ -33,7 +37,7 @@ def print_input(*args):
             elif entry.get()[2] != ":":
                 messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
                 break
-            elif not entry.get()[0] and entry.get()[1] and entry.get()[3] and entry.get()[4] in "0123456789":
+            elif not (entry.get()[0] in n and entry.get()[1] in n and entry.get()[3] in n and entry.get()[4] in n):
                 messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
                 break
             elif not(0 < int(entry.get().split(":")[0]) < 24 and 0 <= int(entry.get().split(":")[0]) < 60):
@@ -42,10 +46,10 @@ def print_input(*args):
             else:
                 entries.append(entry.get())
 
-
-        else:
-            print(entry)
+        elif isinstance(entry, Entry):
             correct_values.append(entry.get())
+        else:
+            correct_values.append(entry)
         i += 1
 
     if basic_values[1][-1] != "?":
@@ -118,7 +122,7 @@ def add_yes_no_objective():
         entries[i].grid(row=i, column=1)
 
     Button(select_type_window, text="Back",command=get_back).grid(row=len(entries), column=0)
-    Button(select_type_window, text="Add", command=print_input
+    Button(select_type_window, text="Add", command=use_input
            ).grid(row=len(entries), column=1)
 
 
@@ -160,7 +164,7 @@ def add_measurable_objective():
         entries[i].grid(row=i,column=1)
     
     Button(select_type_window, text="Back",command=get_back).grid(row=len(entries), column=0)
-    Button(select_type_window, text="Add", command=print_input).grid(row=len(entries), column=1)
+    Button(select_type_window, text="Add", command=use_input).grid(row=len(entries), column=1)
 
 
 
