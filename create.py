@@ -5,7 +5,7 @@ from tkinter import filedialog
 from visual_effects import *
 
 # I need to extract data from OptionMenu and validate other data there.
-def use_input(*args):
+def validate_input(*args):
     # this string is used in validation as a regex
     n = "0123456789"  
 
@@ -54,7 +54,9 @@ def use_input(*args):
 
     if basic_values[1][-1] != "?":
         basic_values[1] = basic_values[1] + "?"
-    print(correct_values)
+
+    select_type_window.destroy()
+    return use_input(correct_values)
 
 
 # Done - It is meant just to create two buttons
@@ -122,8 +124,7 @@ def add_yes_no_objective():
         entries[i].grid(row=i, column=1)
 
     Button(select_type_window, text="Back",command=get_back).grid(row=len(entries), column=0)
-    Button(select_type_window, text="Add", command=use_input
-           ).grid(row=len(entries), column=1)
+    Button(select_type_window, text="Add", command=validate_input).grid(row=len(entries), column=1)
 
 
 # Mostly done - waits for validation
@@ -164,13 +165,13 @@ def add_measurable_objective():
         entries[i].grid(row=i,column=1)
     
     Button(select_type_window, text="Back",command=get_back).grid(row=len(entries), column=0)
-    Button(select_type_window, text="Add", command=use_input).grid(row=len(entries), column=1)
+    Button(select_type_window, text="Add", command=validate_input).grid(row=len(entries), column=1)
 
 
 
 # Waiting till valitadion for entries
-def use_objective_input(selected):
-    print(selected)
+def use_input(values):
+    print(values)
 
 def create_obejctive(objective_type):
     pass
