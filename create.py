@@ -220,7 +220,7 @@ def change_theme(current_theme):
 
 # this function sets the saves folder arbitraily  
 
-# currently doesn't work since I'm on linux
+
 
 # def create_saves_folder():
 #     if os.path.isdir("C:\\HbtsApp"):
