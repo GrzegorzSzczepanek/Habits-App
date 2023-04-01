@@ -1,5 +1,7 @@
 import tkinter as tk
 
+# class that I use to generate entries with placeholders
+
 class EntryWithPlaceholder(tk.Entry):
     def __init__(self, master=None, placeholder="PLACEHOLDER", color='grey'):
         super().__init__(master)
