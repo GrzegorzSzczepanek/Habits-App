@@ -1,3 +1,4 @@
+import pandas as pd
 import os
 from tkinter import *
 from tkinter import messagebox
@@ -20,14 +21,14 @@ def validate_input(*args):
     ]
     i = 0
     for entry in entries:
-        print(entry)
+        # print(entry)
         if isinstance(entry, OptionMenu):
             correct_values.append(clicked.get())
         elif isinstance(entry, Entry) and entry.get() in basic_values:
             messagebox.showerror('Incorrect values', 'You need to create your own objectives')
             break
 
-# validation for hour input
+# validation for time input
         elif i == 2:
             if entry.get().lower() == "none":
                 correct_values.append(entry.get().lower())
@@ -52,11 +53,12 @@ def validate_input(*args):
             correct_values.append(entry)
         i += 1
 
-    if basic_values[1][-1] != "?":
-        basic_values[1] = basic_values[1] + "?"
+    if correct_values[1][-1] != "?":
+        correct_values[1] = correct_values[1] + "?"
 
     select_type_window.destroy()
-    return use_input(correct_values)
+    # print(correct_values)
+    return correct_values
 
 
 # Done - It is meant just to create two buttons
@@ -86,7 +88,7 @@ def add_objective():
     create_starting_btns()
 
 
-# Mostly done
+# Done but there is space for improvement
 def add_yes_no_objective():
     global entries
     _button_list = select_type_window.winfo_children()
@@ -124,10 +126,10 @@ def add_yes_no_objective():
         entries[i].grid(row=i, column=1)
 
     Button(select_type_window, text="Back",command=get_back).grid(row=len(entries), column=0)
-    Button(select_type_window, text="Add", command=validate_input).grid(row=len(entries), column=1)
+    Button(select_type_window, text="Add", command=use_input).grid(row=len(entries), column=1)
 
 
-# Mostly done - waits for validation
+# Done but there is space for improvement
 def add_measurable_objective():
     _button_list = select_type_window.winfo_children()
     _button_list[0].destroy()
@@ -139,7 +141,7 @@ def add_measurable_objective():
         Label(select_type_window, text="Question"),
         Label(select_type_window,text="Remainder"),
         Label(select_type_window,text="Notes"),
-        Label(select_type_window, text="Unin f.e kilometers"),
+        Label(select_type_window, text="Unit f.e kilometers"),
         Label(select_type_window,text="Frequency per week")
     ]
     for i in range (0, len(labels)):
@@ -165,16 +167,18 @@ def add_measurable_objective():
         entries[i].grid(row=i,column=1)
     
     Button(select_type_window, text="Back",command=get_back).grid(row=len(entries), column=0)
-    Button(select_type_window, text="Add", command=validate_input).grid(row=len(entries), column=1)
+    Button(select_type_window, text="Add", command=use_input).grid(row=len(entries), column=1)
 
 
+# it has to check wheather it deals with measurable or yes/no objective
+def use_input():
+    valid_input = validate_input()
+    df = pd.DataFrame(
+        [valid_input],
+        columns=['name', 'question', 'notes', 'frequency', 'remainder']
+     )
+    print(df) 
 
-# Waiting till valitadion for entries
-def use_input(values):
-    print(values)
-
-def create_obejctive(objective_type):
-    pass
 
 # Done
 def get_back():
