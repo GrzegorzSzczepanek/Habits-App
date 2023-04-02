@@ -28,3 +28,6 @@ class EntryWithPlaceholder(tk.Entry):
         if not self.get():
             self.put_placeholder()
 
+
+def change_theme(current_theme):
+    pass

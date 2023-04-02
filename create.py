@@ -1,10 +1,13 @@
 import pandas as pd
-import os
 from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog
 from visual_effects import *
+from visualise_data import *
 
+
+# saves_path = '/home/grzes/Documents/saves'
+saves_path = '/home/grzes/Documents/saves'
 # I need to extract data from OptionMenu and validate other data there.
 def validate_input(*args):
     # this string is used in validation as a regex
@@ -88,7 +91,7 @@ def add_objective():
     create_starting_btns()
 
 
-# Done but there is space for improvement
+# Done but there is space for improvement like making length limit for name cell
 def add_yes_no_objective():
     global entries
     _button_list = select_type_window.winfo_children()
@@ -173,11 +176,13 @@ def add_measurable_objective():
 # it has to check wheather it deals with measurable or yes/no objective
 def use_input():
     valid_input = validate_input()
-    df = pd.DataFrame(
+    obj_df = pd.DataFrame(
         [valid_input],
         columns=['name', 'question', 'notes', 'frequency', 'remainder']
      )
-    print(df) 
+    # print(obj_df) 
+    # print(obj_df['question'][0])
+    create_save_file(obj_df, saves_path)
 
 
 # Done
@@ -206,32 +211,7 @@ def open_settings():
                           text="Change language").pack()
 
 
-def change_theme(current_theme):
-    pass
-
-
 # this function creates folder for saves only if user has not done it before
-# def create_saves_folder():
-#     if os.path.isdir("C:\\HbtsApp"):
-#         return
-#     else:
-#         check_path = os.path.join("C:\\", "HbtsApp")
-#         os.makedirs(check_path)
-#         source_directory = filedialog.askdirectory(title="Selected Directory will be used to save your data and settings")
-#         path = os.path.join(source_directory, "Saves")
-#         os.makedirs(path)
-#     return path
+# create_saves_folder()
 
-# this function sets the saves folder arbitraily  
-
-
-
-# def create_saves_folder():
-#     if os.path.isdir("C:\\HbtsApp"):
-#         return 
-#     else:
-#         check_path = os.path.join("C:\\", "HbtsApp")
-#         os.makedirs(check_path)
-#         path = os.path.join(check_path, "Saves")
-#         os.makedirs(path)
-#     return path
+# create_saves_folder()
