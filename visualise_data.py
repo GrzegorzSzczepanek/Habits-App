@@ -4,12 +4,14 @@ import os as os
 
 
 # Add validation to check if the file already exists
-def create_save_file(data, saves_path):
+def create_save_file(data):
     filename = data['name'][0] + '.csv'
     progress_filename = data['name'][0] + '_progress' + '.csv'
+
     data.to_csv(filename, index=False)
     obj_path = os.path.join(filename)
     data.to_csv(filename, index=False)
+    
     create_objective_plot(obj_path)
 
 
