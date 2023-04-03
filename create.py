@@ -7,8 +7,9 @@ from visualise_data import *
 
 
 # saves_path = '/home/grzes/Documents/saves'
-saves_path = '/home/grzes/Documents/saves'
+# saves_path = '/home/grzes/Documents/saves'
 # I need to extract data from OptionMenu and validate other data there.
+# There needs to be a function to check if file with the name user provided already exists
 def validate_input(*args):
     # this string is used in validation as a regex
     n = "0123456789"  
@@ -176,13 +177,17 @@ def add_measurable_objective():
 # it has to check wheather it deals with measurable or yes/no objective
 def use_input():
     valid_input = validate_input()
-    obj_df = pd.DataFrame(
-        [valid_input],
-        columns=['name', 'question', 'notes', 'frequency', 'remainder']
-     )
-    # print(obj_df) 
-    # print(obj_df['question'][0])
-    create_save_file(obj_df, saves_path)
+    if len(valid_input) == 5:
+        obj_df = pd.DataFrame(
+            [valid_input],
+            columns=['name', 'question', 'notes', 'frequency', 'remainder']
+        )
+    else:
+        obj_df = pd.DataFrame(
+            [valid_input],
+            columns=['name', 'question', 'notes', 'unit', 'frequency', 'remainder']
+        )
+    create_save_file(obj_df)
 
 
 # Done
