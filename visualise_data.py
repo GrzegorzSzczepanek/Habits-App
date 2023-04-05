@@ -12,24 +12,34 @@ def create_save_file(data):
     obj_path = os.path.join(filename)
     data.to_csv(filename, index=False)
     
-    create_objective_plot(obj_path)
+    create_objective_plot(obj_path, progress_filename)
+
+
+def create_objective_plot(filename, progress_filename):
+    df_basic_info = pd.read_csv(filename)
+    df_progress_info = pd.DataFrame(
+        columns=['days','streak','missed', 'percentage'],
+    )
+    # this datafreame will be used in creating plot showing user's regularity
+
+    df_progress_info['days'] = [1,2,3]
+    df_progress_info['streak'] = [1,2,0]
+    df_progress_info['missed'] = [0,0,1]
+    df_progress_info['percentage'] = 100 - (df_progress_info['missed'] / df_progress_info['days']) * 100
+
+    # print(df_progress_info)
+    progress_track_file = df_progress_info.to_csv(progress_filename, index=False)
+    plt.plot(df_progress_info['percentage'])
+    plt.ylim(0, 105)
+    plt.xlim(0, None)
+    plt.title(df_basic_info['name'][0])
+    plt.show()
+
+    return
 
 
 def delete_save_file():
     pass
-
-
-def create_objective_plot(filename):
-    df_basic_info = pd.read_csv(filename)
-    # df_progress_info = pd.DataFrame(
-    #     columns=['streak']
-    # )
-
-    print(df_basic_info)
-    plt.plot([1, 2, 3], [4, 5, 6])
-    plt.title(df_basic_info['name'][0])
-    plt.show()
-    return
 
 
 # this function creates folder for saves only if user has not done it before
