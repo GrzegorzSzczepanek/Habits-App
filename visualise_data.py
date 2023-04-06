@@ -11,30 +11,33 @@ def create_save_file(data):
     data.to_csv(filename, index=False)
     obj_path = os.path.join(filename)
     data.to_csv(filename, index=False)
-    
-    create_objective_plot(obj_path, progress_filename)
 
-
-def create_objective_plot(filename, progress_filename):
     df_basic_info = pd.read_csv(filename)
     df_progress_info = pd.DataFrame(
         columns=['days','streak','missed', 'percentage'],
     )
     # this datafreame will be used in creating plot showing user's regularity
-
-    df_progress_info['days'] = [1,2,3]
-    df_progress_info['streak'] = [1,2,0]
-    df_progress_info['missed'] = [0,0,1]
+    df_progress_info['days'] = [1]
+    df_progress_info['streak'] = [1]
+    df_progress_info['missed'] = [0]
     df_progress_info['percentage'] = 100 - (df_progress_info['missed'] / df_progress_info['days']) * 100
+    
+    
+    create_objective_plot(df_progress_info, progress_filename,  data['name'][0])
 
-    # print(df_progress_info)
+
+# plots should be generated dynamically when clicking the objective name.
+# Plot generating lines shall be moved to different functions later so it'll be generated only when needed
+
+
+def create_objective_plot(df_progress_info, progress_filename, name):
     progress_track_file = df_progress_info.to_csv(progress_filename, index=False)
     plt.plot(df_progress_info['percentage'])
     plt.ylim(0, 105)
     plt.xlim(0, None)
-    plt.title(df_basic_info['name'][0])
+    plt.title(name)
     plt.show()
-
+    # print(pd.read_csv(progress_filename))
     return
 
 

@@ -1,3 +1,4 @@
+import glob
 import pandas as pd
 from tkinter import *
 from tkinter import messagebox
@@ -10,59 +11,55 @@ from visualise_data import *
 # saves_path = '/home/grzes/Documents/saves'
 # I need to extract data from OptionMenu and validate other data there.
 # There needs to be a function to check if file with the name user provided already exists
-def validate_input(*args):
-    # this string is used in validation as a regex
-    n = "0123456789"  
 
-    basic_values = [
-        'f.e Wake up at 7AM',
-        'F.e. did you wake up early',
-        '18:00/None',
-        'Any additional information',
-    ]
-    correct_values = [
 
-    ]
-    i = 0
-    for entry in entries:
-        # print(entry)
-        if isinstance(entry, OptionMenu):
-            correct_values.append(clicked.get())
-        elif isinstance(entry, Entry) and entry.get() in basic_values:
-            messagebox.showerror('Incorrect values', 'You need to create your own objectives')
-            break
+def generate_main_window_content(window, height=700, width=250):
+    # _window_widgets = window.winfo_children()
+    # for i in _window_widgets:
+    #     i.destroy()
+    global center_frame
+    center_frame = Frame(window)
+    center_frame.pack(side="right")
 
-# validation for time input
-        elif i == 2:
-            if entry.get().lower() == "none":
-                correct_values.append(entry.get().lower())
-            elif len(entry.get()) != 5:
-                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
-                break
-            elif entry.get()[2] != ":":
-                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
-                break
-            elif not (entry.get()[0] in n and entry.get()[1] in n and entry.get()[3] in n and entry.get()[4] in n):
-                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
-                break
-            elif not(0 < int(entry.get().split(":")[0]) < 24 and 0 <= int(entry.get().split(":")[0]) < 60):
-                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
-                break
-            else:
-                entries.append(entry.get())
+    menu_frame = Frame(window,
+                    bg="#d45",
+                    height=height,
+                    width=int(width))
+    menu_frame.pack(side="left", fill="y")
 
-        elif isinstance(entry, Entry):
-            correct_values.append(entry.get())
-        else:
-            correct_values.append(entry)
-        i += 1
+    add_objective_btn = Button(menu_frame,
+                            text="Add Objective",
+                            command=add_objective,
+                            padx=10,
+                            pady=10,
+                            )
+    add_objective_btn.pack(pady=20, padx=20)
 
-    if correct_values[1][-1] != "?":
-        correct_values[1] = correct_values[1] + "?"
+    settings_btn = Button(menu_frame,
+                            text="Settings",
+                            command=open_settings,
+                            padx=10,
+                            pady=10,
+                            width=10
+                            )
+    settings_btn.pack(pady=20, padx=20)
 
-    select_type_window.destroy()
-    # print(correct_values)
-    return correct_values
+    create_buttons_from_saves(center_frame)
+
+
+def create_buttons_from_saves(center_frame):
+    # _frame_widgets = center_frame.winfo_children()
+    # for i in _frame_widgets:
+    #     i.destroy()
+
+    csv_file_saves = glob.glob('*.csv')
+    print(csv_file_saves)
+    for index, i in enumerate(csv_file_saves):
+        if 'progress' not in i:
+            data = pd.read_csv(i)
+            btn = Button(center_frame, text=data['name'][0],
+                        command=None,
+                            bg='#222', fg='#EEE').grid(row=index, column=1)
 
 
 # Done - It is meant just to create two buttons
@@ -81,7 +78,6 @@ def create_starting_btns():
                                   fg="#FFF",
                                   command=add_measurable_objective
                                   ).grid(row=1)
-
 
 
 # Done - this function is supposed just to make a window
@@ -187,7 +183,67 @@ def use_input():
             [valid_input],
             columns=['name', 'question', 'notes', 'unit', 'frequency', 'remainder']
         )
+
     create_save_file(obj_df)
+    create_buttons_from_saves(center_frame)
+
+
+def validate_input(*args):
+    # this string is used in validation as a regex
+    n = "0123456789"  
+
+    basic_values = [
+        'f.e Wake up at 7AM',
+        'F.e. did you wake up early',
+        '18:00/None',
+        'Any additional information',
+    ]
+    correct_values = []
+    i = 0
+    for entry in entries:
+        # print(entry)
+
+        if (i == 0 or i == 1) and len(entry.get().strip()) == 0:
+            messagebox.showerror('Incorrect values', 'Objective name and question can\'t be empty')
+            break
+
+        if isinstance(entry, OptionMenu):
+            correct_values.append(clicked.get())
+        elif isinstance(entry, Entry) and entry.get() in basic_values:
+            messagebox.showerror('Incorrect values', 'You need to create your own objectives')
+            break
+
+# validation for time input
+        elif i == 2:
+            if entry.get().lower() == "none":
+                correct_values.append(entry.get().lower())
+            elif len(entry.get()) != 5:
+                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
+                break
+            elif entry.get()[2] != ":":
+                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
+                break
+            elif not (entry.get()[0] in n and entry.get()[1] in n and entry.get()[3] in n and entry.get()[4] in n):
+                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
+                break
+            elif not(0 < int(entry.get().split(":")[0]) < 24 and 0 <= int(entry.get().split(":")[0]) < 60):
+                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
+                break
+            else:
+                entries.append(entry.get())
+
+        elif isinstance(entry, Entry):
+            correct_values.append(entry.get())
+        else:
+            correct_values.append(entry)
+        i += 1
+
+    if correct_values[1][-1] != "?":
+        correct_values[1] = correct_values[1] + "?"
+
+    select_type_window.destroy()
+    print(correct_values)
+    return correct_values
 
 
 # Done
@@ -218,5 +274,4 @@ def open_settings():
 
 # this function creates folder for saves only if user has not done it before
 # create_saves_folder()
-
 # create_saves_folder()
