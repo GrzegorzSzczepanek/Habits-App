@@ -57,9 +57,11 @@ def create_buttons_from_saves(center_frame):
     for index, i in enumerate(csv_file_saves):
         if 'progress' not in i:
             data = pd.read_csv(i)
+            current_filename = data['name'][0]
             btn = Button(center_frame, text=data['name'][0],
-                        command=None,
-                            bg='#222', fg='#EEE').grid(row=index, column=1)
+                        bg='#222', fg='#EEE',
+                        command=lambda x=current_filename: create_objective_plot(x)
+                        ).grid(row=index, column=1)
 
 
 # Done - It is meant just to create two buttons

@@ -21,21 +21,24 @@ def create_save_file(data):
     df_progress_info['streak'] = [1]
     df_progress_info['missed'] = [0]
     df_progress_info['percentage'] = 100 - (df_progress_info['missed'] / df_progress_info['days']) * 100
-    
-    
-    create_objective_plot(df_progress_info, progress_filename,  data['name'][0])
+
+    progress_track_file = df_progress_info.to_csv(progress_filename, index=False)
+
+    # create_objective_plot(progress_filename,  data['name'][0])
 
 
 # plots should be generated dynamically when clicking the objective name.
 # Plot generating lines shall be moved to different functions later so it'll be generated only when needed
 
 
-def create_objective_plot(df_progress_info, progress_filename, name):
-    progress_track_file = df_progress_info.to_csv(progress_filename, index=False)
-    plt.plot(df_progress_info['percentage'])
+def create_objective_plot(progress_filename):
+    df = pd.read_csv(progress_filename + '_progress.csv')
+    df['percentage'] = 100 - (df['missed'] / df['days']) * 100
+    print(df)
+    plt.plot(df['percentage'][0:])
     plt.ylim(0, 105)
     plt.xlim(0, None)
-    plt.title(name)
+    plt.title(progress_filename)
     plt.show()
     # print(pd.read_csv(progress_filename))
     return
