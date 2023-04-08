@@ -1,5 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import tkinter as tk
 import os as os
 
 
@@ -24,23 +26,37 @@ def create_save_file(data):
 
     progress_track_file = df_progress_info.to_csv(progress_filename, index=False)
 
-    # create_objective_plot(progress_filename,  data['name'][0])
 
+def open_widndow_with_plot(progress_filename, window):
+    new_window = tk.Toplevel(window)
+    new_window.title("New Window")
+    new_window.geometry("800x500")
 
-# plots should be generated dynamically when clicking the objective name.
-# Plot generating lines shall be moved to different functions later so it'll be generated only when needed
+    # create grid for a window
+    for i in range(9):
+        new_window.columnconfigure(i, weight=1, minsize=80)
+        new_window.rowconfigure(i, weight=1, minsize=50)
 
+    # create plot
+    fig, ax = plt.subplots()
+    canvas = FigureCanvasTkAgg(fig, master=new_window)
+    canvas.draw()
+    canvas.get_tk_widget().grid(row=2, column=6, columnspan=4, rowspan=4)
 
-def create_objective_plot(progress_filename):
     df = pd.read_csv(progress_filename + '_progress.csv')
     df['percentage'] = 100 - (df['missed'] / df['days']) * 100
-    print(df)
-    plt.plot(df['percentage'][0:])
-    plt.ylim(0, 105)
-    plt.xlim(0, None)
-    plt.title(progress_filename)
-    plt.show()
-    # print(pd.read_csv(progress_filename))
+    ax.plot(df['percentage'][0:])
+    ax.set_ylim(0, 105)
+    ax.set_xlim(0, None)
+    ax.set_title(progress_filename)
+    canvas.draw()
+
+    streak = int(df.iloc[-1]['streak'])
+    streak_label = tk.Label(new_window, text=f"You are on {(streak)} day streak", font=('Tahoma', 20),
+                            fg='#000').grid(row=1, column=2, columnspan=4)
+
+    input_frame = tk.Frame(new_window).grid(row=3, rowspan=6, column=1, columnspan=3)
+
     return
 
 

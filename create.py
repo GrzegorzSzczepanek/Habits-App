@@ -48,10 +48,6 @@ def generate_main_window_content(window, height=700, width=250):
 
 
 def create_buttons_from_saves(center_frame):
-    # _frame_widgets = center_frame.winfo_children()
-    # for i in _frame_widgets:
-    #     i.destroy()
-
     csv_file_saves = glob.glob('*.csv')
     print(csv_file_saves)
     for index, i in enumerate(csv_file_saves):
@@ -60,7 +56,7 @@ def create_buttons_from_saves(center_frame):
             current_filename = data['name'][0]
             btn = Button(center_frame, text=data['name'][0],
                         bg='#222', fg='#EEE',
-                        command=lambda x=current_filename: create_objective_plot(x)
+                        command=lambda x=current_filename: open_widndow_with_plot(x, center_frame.winfo_toplevel())
                         ).grid(row=index, column=1)
 
 
