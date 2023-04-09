@@ -49,14 +49,14 @@ def generate_main_window_content(window, height=700, width=250):
 
 def create_buttons_from_saves(center_frame):
     csv_file_saves = glob.glob('*.csv')
-    print(csv_file_saves)
+    # print(csv_file_saves)
     for index, i in enumerate(csv_file_saves):
         if 'progress' not in i:
             data = pd.read_csv(i)
             current_filename = data['name'][0]
             btn = Button(center_frame, text=data['name'][0],
                         bg='#222', fg='#EEE',
-                        command=lambda x=current_filename: open_widndow_with_plot(x, center_frame.winfo_toplevel())
+                        command=lambda x=current_filename: open_widndow(x, center_frame.winfo_toplevel())
                         ).grid(row=index, column=1)
 
 

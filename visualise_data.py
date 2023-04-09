@@ -7,6 +7,7 @@ import os as os
 
 # Add validation to check if the file already exists
 def create_save_file(data):
+    print(data)
     filename = data['name'][0] + '.csv'
     progress_filename = data['name'][0] + '_progress' + '.csv'
 
@@ -24,10 +25,15 @@ def create_save_file(data):
     df_progress_info['missed'] = [0]
     df_progress_info['percentage'] = 100 - (df_progress_info['missed'] / df_progress_info['days']) * 100
 
+    if data.shape[1] == 6:
+        # these columns are explicit to measurable objective
+        df_progress_info['done'] = 0
+        df_progress_info['average'] = df_progress_info['done'].sum() / df_progress_info['days']
+
     progress_track_file = df_progress_info.to_csv(progress_filename, index=False)
 
 
-def open_widndow_with_plot(progress_filename, window):
+def open_widndow(progress_filename, window):
     new_window = tk.Toplevel(window)
     new_window.title("New Window")
     new_window.geometry("800x500")
@@ -37,7 +43,10 @@ def open_widndow_with_plot(progress_filename, window):
         new_window.columnconfigure(i, weight=1, minsize=80)
         new_window.rowconfigure(i, weight=1, minsize=50)
 
-    # create plot
+    generate_content(new_window, progress_filename)
+
+
+def generate_content(new_window, progress_filename):
     fig, ax = plt.subplots()
     canvas = FigureCanvasTkAgg(fig, master=new_window)
     canvas.draw()
@@ -57,6 +66,12 @@ def open_widndow_with_plot(progress_filename, window):
 
     input_frame = tk.Frame(new_window).grid(row=3, rowspan=6, column=1, columnspan=3)
 
+
+def generate_form(input_frame, obj_type):
+    if obj_type == 'measurable':
+        pass
+    elif obj_type == 'YN':
+        pass
     return
 
 
