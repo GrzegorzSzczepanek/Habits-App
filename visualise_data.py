@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
 import os as os
+from visual_effects import * 
 
 
 # Add validation to check if the file already exists
@@ -25,11 +26,14 @@ def create_save_file(data):
     df_progress_info['missed'] = [0]
     df_progress_info['percentage'] = 100 - (df_progress_info['missed'] / df_progress_info['days']) * 100
 
+    global obj_type
+    obj_type = "YN"
+
     if data.shape[1] == 6:
         # these columns are explicit to measurable objective
         df_progress_info['done'] = 0
         df_progress_info['average'] = df_progress_info['done'].sum() / df_progress_info['days']
-
+        obj_type = 'measurable'
     progress_track_file = df_progress_info.to_csv(progress_filename, index=False)
 
 
@@ -37,6 +41,9 @@ def open_widndow(progress_filename, window):
     new_window = tk.Toplevel(window)
     new_window.title("New Window")
     new_window.geometry("800x500")
+    
+    global validate_cmd
+    validate_cmd = window.register(validate_entry_text)
 
     # create grid for a window
     for i in range(9):
@@ -64,14 +71,35 @@ def generate_content(new_window, progress_filename):
     streak_label = tk.Label(new_window, text=f"You are on {(streak)} day streak", font=('Tahoma', 20),
                             fg='#000').grid(row=1, column=2, columnspan=4)
 
-    input_frame = tk.Frame(new_window).grid(row=3, rowspan=6, column=1, columnspan=3)
+    input_frame = tk.Frame(new_window)
+    input_frame.grid(row=3, rowspan=6, column=1, columnspan=3)
+    for i in range(4):
+        input_frame.rowconfigure(i, weight=1)
+    
+    generate_form(input_frame, )
+
+def validate_entry_text():
+    pass
 
 
-def generate_form(input_frame, obj_type):
+def generate_form(input_frame):
+    var1 = tk.IntVar()
+    var2 = tk.IntVar()
+    entries = [
+       tk.Label(input_frame, text='Did you do...?'),
+       tk.Radiobutton(input_frame, text='no', variable=var1, value=0),
+       tk.Radiobutton(input_frame, text='yes', variable=var2, value=1)
+    ]
+
     if obj_type == 'measurable':
-        pass
-    elif obj_type == 'YN':
-        pass
+        entries.append(EntryWithPlaceholder(input_frame, 'unit f.e. Kilometers',
+                                             validate="key",
+                                               validatecommand=(validate_cmd, '%S')))
+
+    for i in range(len(entries)):
+        entries[i].grid(row=i)
+
+
     return
 
 
