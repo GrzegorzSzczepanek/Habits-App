@@ -8,7 +8,7 @@ from visual_effects import *
 
 # Add validation to check if the file already exists
 def create_save_file(data):
-    print(data)
+    # print(data)
     filename = data['name'][0] + '.csv'
     progress_filename = data['name'][0] + '_progress' + '.csv'
 
@@ -18,22 +18,19 @@ def create_save_file(data):
 
     df_basic_info = pd.read_csv(filename)
     df_progress_info = pd.DataFrame(
-        columns=['days','streak','missed', 'percentage'],
+        columns=['days','streak','missed', 'percentage', 'objective type','done', 'average'],
     )
     # this datafreame will be used in creating plot showing user's regularity
     df_progress_info['days'] = [1]
     df_progress_info['streak'] = [1]
     df_progress_info['missed'] = [0]
     df_progress_info['percentage'] = 100 - (df_progress_info['missed'] / df_progress_info['days']) * 100
-
-    global obj_type
-    obj_type = "YN"
-
-    if data.shape[1] == 6:
+    if data.shape[1] == 7:
         # these columns are explicit to measurable objective
-        df_progress_info['done'] = 0
-        df_progress_info['average'] = df_progress_info['done'].sum() / df_progress_info['days']
-        obj_type = 'measurable'
+        df_progress_info['done'] = [0]
+        df_progress_info['average'] = [df_progress_info['done'].sum() / df_progress_info['days']]
+
+
     progress_track_file = df_progress_info.to_csv(progress_filename, index=False)
 
 
@@ -41,7 +38,7 @@ def open_widndow(progress_filename, window):
     new_window = tk.Toplevel(window)
     new_window.title("New Window")
     new_window.geometry("800x500")
-    
+
     global validate_cmd
     validate_cmd = window.register(validate_entry_text)
 
@@ -75,14 +72,16 @@ def generate_content(new_window, progress_filename):
     input_frame.grid(row=3, rowspan=6, column=1, columnspan=3)
     for i in range(4):
         input_frame.rowconfigure(i, weight=1)
-    
-    generate_form(input_frame, )
+
+    filename = progress_filename.replace('_progress', '') + '.csv'
+    # print(filename)
+    generate_form(input_frame, filename)
 
 def validate_entry_text():
     pass
 
 
-def generate_form(input_frame):
+def generate_form(input_frame, filename):
     var1 = tk.IntVar()
     var2 = tk.IntVar()
     entries = [
@@ -91,14 +90,14 @@ def generate_form(input_frame):
        tk.Radiobutton(input_frame, text='yes', variable=var2, value=1)
     ]
 
-    if obj_type == 'measurable':
-        entries.append(EntryWithPlaceholder(input_frame, 'unit f.e. Kilometers',
-                                             validate="key",
-                                               validatecommand=(validate_cmd, '%S')))
+    #print(pd.read_csv(filename).iloc[0, 'objective type'])
+    # if pd.read_csv(filename)['objective type'][0] == 'measurable':
+    #     entries.append(EntryWithPlaceholder(input_frame, 'unit f.e. Kilometers',
+    #                                          validate="key",
+    #                                            validatecommand=(validate_cmd, '%S')))
 
     for i in range(len(entries)):
         entries[i].grid(row=i)
-
 
     return
 

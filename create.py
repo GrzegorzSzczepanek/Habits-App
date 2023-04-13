@@ -157,13 +157,13 @@ def add_measurable_objective():
         EntryWithPlaceholder(select_type_window, "f.e Read pages of the book"),
         EntryWithPlaceholder(select_type_window, "How many kilometers did you run?"),
         EntryWithPlaceholder(select_type_window, "21:37/None"),
-        EntryWithPlaceholder(select_type_window, "Any info you find usefull"),
+        EntryWithPlaceholder(select_type_window, "Any additional information"),
         EntryWithPlaceholder(select_type_window, "f.e Kilometers"),
         OptionMenu(select_type_window, clicked, *options)
     ]
     for i in range(0, len(entries)):
         entries[i].grid(row=i,column=1)
-    
+
     Button(select_type_window, text="Back",command=get_back).grid(row=len(entries), column=0)
     Button(select_type_window, text="Add", command=use_input).grid(row=len(entries), column=1)
 
@@ -171,15 +171,15 @@ def add_measurable_objective():
 # it has to check wheather it deals with measurable or yes/no objective
 def use_input():
     valid_input = validate_input()
-    if len(valid_input) == 5:
+    if len(valid_input) == 6:
         obj_df = pd.DataFrame(
             [valid_input],
-            columns=['name', 'question', 'notes', 'frequency', 'remainder']
+            columns=['name', 'question', 'notes', 'frequency', 'remainder', 'objective type']
         )
     else:
         obj_df = pd.DataFrame(
             [valid_input],
-            columns=['name', 'question', 'notes', 'unit', 'frequency', 'remainder']
+            columns=['name', 'question', 'notes', 'unit', 'frequency', 'remainder', 'objective type']
         )
 
     create_save_file(obj_df)
@@ -195,6 +195,7 @@ def validate_input(*args):
         'F.e. did you wake up early',
         '18:00/None',
         'Any additional information',
+        'f.e Kilometers'
     ]
     correct_values = []
     i = 0
@@ -236,11 +237,17 @@ def validate_input(*args):
             correct_values.append(entry)
         i += 1
 
+    # make sure user will receive a question later
     if correct_values[1][-1] != "?":
         correct_values[1] = correct_values[1] + "?"
 
+    if len(correct_values) == 5:
+        correct_values.append('y/n')
+    else:
+        correct_values.append('measurable')
+
     select_type_window.destroy()
-    print(correct_values)
+    # print(correct_values)
     return correct_values
 
 
