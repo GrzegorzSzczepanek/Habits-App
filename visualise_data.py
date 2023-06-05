@@ -73,7 +73,7 @@ def generate_content(new_window, progress_filename):
 
     input_frame = tk.Frame(new_window)
     input_frame.grid(row=3, rowspan=6, column=1, columnspan=3)
-<<<<<<< HEAD
+
     for i in range(4):
         input_frame.rowconfigure(i, weight=1)
 
@@ -102,7 +102,7 @@ def generate_form(input_frame, filename):
 
     for i in range(len(entries)):
         entries[i].grid(row=i)
-=======
+
     for i in range(3):  # Number of rows
         input_frame.rowconfigure(i, weight=1, minsize=50)
 
@@ -110,8 +110,6 @@ def generate_form(input_frame, filename):
         input_frame.columnconfigure(j, weight=1, minsize=80)
 
     create_yesno_input(new_window, input_frame)
->>>>>>> a02b751 (Minor changes in visualising data.)
-
     return
 
 
