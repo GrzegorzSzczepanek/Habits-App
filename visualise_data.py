@@ -6,11 +6,14 @@ import os as os
 from visual_effects import * 
 
 
-# Add validation to check if the file already exists
 def create_save_file(data):
     # print(data)
     filename = data['name'][0] + '.csv'
     progress_filename = data['name'][0] + '_progress' + '.csv'
+
+    if os.path.isfile(filename) or os.path.isfile(progress_filename):
+        tk.messagebox.showerror('Task with such name already exists', 'Create task with unique name or delete previous one')
+        return
 
     data.to_csv(filename, index=False)
     obj_path = os.path.join(filename)
@@ -70,6 +73,7 @@ def generate_content(new_window, progress_filename):
 
     input_frame = tk.Frame(new_window)
     input_frame.grid(row=3, rowspan=6, column=1, columnspan=3)
+<<<<<<< HEAD
     for i in range(4):
         input_frame.rowconfigure(i, weight=1)
 
@@ -98,9 +102,34 @@ def generate_form(input_frame, filename):
 
     for i in range(len(entries)):
         entries[i].grid(row=i)
+=======
+    for i in range(3):  # Number of rows
+        input_frame.rowconfigure(i, weight=1, minsize=50)
+
+    for j in range(3):  # Number of columns
+        input_frame.columnconfigure(j, weight=1, minsize=80)
+
+    create_yesno_input(new_window, input_frame)
+>>>>>>> a02b751 (Minor changes in visualising data.)
 
     return
 
+
+def create_yesno_input(new_window, input_frame):
+
+    check_label = tk.Label(input_frame, text="Did you do your goal for today?").grid(row=0, column=0)
+
+    yes_no_var = tk.StringVar()
+    yes_no_var.set("No")
+
+    yes_button = tk.Radiobutton(input_frame, text="Yes", variable=yes_no_var, value="Yes")
+    no_button = tk.Radiobutton(input_frame, text="No", variable=yes_no_var, value="No")
+
+    yes_button.grid(row=0, column=0)
+    no_button.grid(row=0, column=1)
+
+    user_input = yes_no_var.get()
+    print(user_input)
 
 def delete_save_file():
     pass
