@@ -21,61 +21,62 @@ def generate_main_window_content(window, height=700, width=250):
     center_frame = Frame(window)
     center_frame.pack(side="right")
 
-    menu_frame = Frame(window,
-                    bg="#d45",
-                    height=height,
-                    width=int(width))
+    menu_frame = Frame(window, bg="#d45", height=height, width=int(width))
     menu_frame.pack(side="left", fill="y")
 
-    add_objective_btn = Button(menu_frame,
-                            text="Add Objective",
-                            command=add_objective,
-                            padx=10,
-                            pady=10,
-                            )
+    add_objective_btn = Button(
+        menu_frame,
+        text="Add Objective",
+        command=add_objective,
+        padx=10,
+        pady=10,
+    )
     add_objective_btn.pack(pady=20, padx=20)
 
-    settings_btn = Button(menu_frame,
-                            text="Settings",
-                            command=open_settings,
-                            padx=10,
-                            pady=10,
-                            width=10
-                            )
+    settings_btn = Button(
+        menu_frame, text="Settings", command=open_settings, padx=10, pady=10, width=10
+    )
     settings_btn.pack(pady=20, padx=20)
 
     create_buttons_from_saves(center_frame)
 
 
 def create_buttons_from_saves(center_frame):
-    csv_file_saves = glob.glob('*.csv')
+    csv_file_saves = glob.glob("*.csv")
     # print(csv_file_saves)
     for index, i in enumerate(csv_file_saves):
-        if 'progress' not in i:
+        if "progress" not in i:
             data = pd.read_csv(i)
-            current_filename = data['name'][0]
-            btn = Button(center_frame, text=data['name'][0],
-                        bg='#222', fg='#EEE',
-                        command=lambda x=current_filename: open_widndow(x, center_frame.winfo_toplevel())
-                        ).grid(row=index, column=1)
+            current_filename = data["name"][0]
+            btn = Button(
+                center_frame,
+                text=data["name"][0],
+                bg="#222",
+                fg="#EEE",
+                command=lambda x=current_filename: open_widndow(
+                    x, center_frame.winfo_toplevel()
+                ),
+            ).grid(row=index, column=1)
 
 
 # Done - It is meant just to create two buttons
 def create_starting_btns():
     global measurable_objective_btn, yes_no_objective_btn
-    yes_no_objective_btn = Button(select_type_window,
-                                  text="YES/NO\nf.e. Did you wake up at 6AM",
-                                  bg="#222",
-                                  fg="#FFF",
-                                  command=add_yes_no_objective
-                                  ).grid(row=0)
+    yes_no_objective_btn = Button(
+        select_type_window,
+        text="YES/NO\nf.e. Did you wake up at 6AM",
+        bg="#222",
+        fg="#FFF",
+        command=add_yes_no_objective,
+    ).grid(row=0)
 
-    measurable_objective_btn = Button(select_type_window,
-                                  text="Measurable Objective\nf.e. How many book pages have you read today",
-                                  bg="#222",
-                                  fg="#FFF",
-                                  command=add_measurable_objective
-                                  ).grid(row=1)
+    measurable_objective_btn = Button(
+        select_type_window,
+        text="Measurable Objective\nf.e. How many book pages have you read today",
+        bg="#222",
+        fg="#FFF",
+        command=add_measurable_objective,
+    ).grid(row=1)
 
 
 # Done - this function is supposed just to make a window
@@ -94,37 +95,37 @@ def add_yes_no_objective():
     _button_list[1].destroy()
 
     labels = [
-        Label(select_type_window,text="Name of task"),
-        Label(select_type_window,text="Question"),
-        Label(select_type_window,text="Remainder"),
-        Label(select_type_window,text="Notes"),
-        Label(select_type_window,text="Frequency per week")
+        Label(select_type_window, text="Name of task"),
+        Label(select_type_window, text="Question"),
+        Label(select_type_window, text="Remainder"),
+        Label(select_type_window, text="Notes"),
+        Label(select_type_window, text="Frequency per week"),
     ]
-    for i in range (0, len(labels)):
+    for i in range(0, len(labels)):
         labels[i].grid(row=i, column=0)
 
-    options = [
-        "everyday",
-        "every other day",
-        "weekly"
-    ]
+    options = ["everyday", "every other day", "weekly"]
     global clicked
     clicked = StringVar()
 
-    clicked.set( "everyday" )
+    clicked.set("everyday")
 
     entries = [
         EntryWithPlaceholder(select_type_window, "f.e Wake up at 7AM"),
         EntryWithPlaceholder(select_type_window, "F.e. did you wake up early?"),
         EntryWithPlaceholder(select_type_window, "18:00/None"),
         EntryWithPlaceholder(select_type_window, "Any additional information"),
-        OptionMenu(select_type_window, clicked, *options)
+        OptionMenu(select_type_window, clicked, *options),
     ]
     for i in range(0, len(entries)):
         entries[i].grid(row=i, column=1)
 
-    Button(select_type_window, text="Back",command=get_back).grid(row=len(entries), column=0)
-    Button(select_type_window, text="Add", command=use_input).grid(row=len(entries), column=1)
+    Button(select_type_window, text="Back", command=get_back).grid(
+        row=len(entries), column=0
+    )
+    Button(select_type_window, text="Add", command=use_input).grid(
+        row=len(entries), column=1
+    )
 
 
 # Done but there is space for improvement
@@ -137,19 +138,15 @@ def add_measurable_objective():
     labels = [
         Label(select_type_window, text="Name of task"),
         Label(select_type_window, text="Question"),
-        Label(select_type_window,text="Remainder"),
-        Label(select_type_window,text="Notes"),
+        Label(select_type_window, text="Remainder"),
+        Label(select_type_window, text="Notes"),
         Label(select_type_window, text="Unit f.e kilometers"),
-        Label(select_type_window,text="Frequency per week")
+        Label(select_type_window, text="Frequency per week"),
     ]
-    for i in range (0, len(labels)):
+    for i in range(0, len(labels)):
         labels[i].grid(row=i, column=0)
 
-    options = [
-        "everyday",
-        "every other day",
-        "weekly"
-    ]
+    options = ["everyday", "every other day", "weekly"]
     global clicked
     clicked = StringVar()
     clicked.set("everyday")
@@ -159,13 +156,17 @@ def add_measurable_objective():
         EntryWithPlaceholder(select_type_window, "21:37/None"),
         EntryWithPlaceholder(select_type_window, "Any additional information"),
         EntryWithPlaceholder(select_type_window, "f.e Kilometers"),
-        OptionMenu(select_type_window, clicked, *options)
+        OptionMenu(select_type_window, clicked, *options),
     ]
     for i in range(0, len(entries)):
-        entries[i].grid(row=i,column=1)
+        entries[i].grid(row=i, column=1)
 
-    Button(select_type_window, text="Back",command=get_back).grid(row=len(entries), column=0)
-    Button(select_type_window, text="Add", command=use_input).grid(row=len(entries), column=1)
+    Button(select_type_window, text="Back", command=get_back).grid(
+        row=len(entries), column=0
+    )
+    Button(select_type_window, text="Add", command=use_input).grid(
+        row=len(entries), column=1
+    )
 
 
 # it has to check wheather it deals with measurable or yes/no objective
@@ -174,12 +175,27 @@ def use_input():
     if len(valid_input) == 6:
         obj_df = pd.DataFrame(
             [valid_input],
-            columns=['name', 'question', 'notes', 'frequency', 'remainder', 'objective type']
+            columns=[
+                "name",
+                "question",
+                "notes",
+                "frequency",
+                "remainder",
+                "objective type",
+            ],
         )
     else:
         obj_df = pd.DataFrame(
             [valid_input],
-            columns=['name', 'question', 'notes', 'unit', 'frequency', 'remainder', 'objective type']
+            columns=[
+                "name",
+                "question",
+                "notes",
+                "unit",
+                "frequency",
+                "remainder",
+                "objective type",
+            ],
         )
 
     create_save_file(obj_df)
@@ -188,14 +204,14 @@ def use_input():
 
 def validate_input(*args):
     # this string is used in validation as a regex
-    n = "0123456789"  
+    n = "0123456789"
 
     basic_values = [
-        'f.e Wake up at 7AM',
-        'F.e. did you wake up early',
-        '18:00/None',
-        'Any additional information',
-        'f.e Kilometers'
+        "f.e Wake up at 7AM",
+        "F.e. did you wake up early",
+        "18:00/None",
+        "Any additional information",
+        "f.e Kilometers",
     ]
     correct_values = []
     i = 0
@@ -203,30 +219,54 @@ def validate_input(*args):
         # print(entry)
 
         if (i == 0 or i == 1) and len(entry.get().strip()) == 0:
-            messagebox.showerror('Incorrect values', 'Objective name and question can\'t be empty')
+            messagebox.showerror(
+                "Incorrect values", "Objective name and question can't be empty"
+            )
             break
 
         if isinstance(entry, OptionMenu):
             correct_values.append(clicked.get())
         elif isinstance(entry, Entry) and entry.get() in basic_values:
-            messagebox.showerror('Incorrect values', 'You need to create your own objectives')
+            messagebox.showerror(
+                "Incorrect values", "You need to create your own objectives"
+            )
             break
 
-# validation for time input
+        # validation for time input
         elif i == 2:
             if entry.get().lower() == "none":
                 correct_values.append(entry.get().lower())
             elif len(entry.get()) != 5:
-                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
+                messagebox.showerror(
+                    "Incorrect values",
+                    "Time shold be in XX:XX format or set as None if you don't want a remainder",
+                )
                 break
             elif entry.get()[2] != ":":
-                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
+                messagebox.showerror(
+                    "Incorrect values",
+                    "Time shold be in XX:XX format or set as None if you don't want a remainder",
+                )
                 break
-            elif not (entry.get()[0] in n and entry.get()[1] in n and entry.get()[3] in n and entry.get()[4] in n):
-                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
+            elif not (
+                entry.get()[0] in n
+                and entry.get()[1] in n
+                and entry.get()[3] in n
+                and entry.get()[4] in n
+            ):
+                messagebox.showerror(
+                    "Incorrect values",
+                    "Time shold be in XX:XX format or set as None if you don't want a remainder",
+                )
                 break
-            elif not(0 < int(entry.get().split(":")[0]) < 24 and 0 <= int(entry.get().split(":")[0]) < 60):
-                messagebox.showerror("Incorrect values", "Time shold be in XX:XX format or set as None if you don't want a remainder")
+            elif not (
+                0 < int(entry.get().split(":")[0]) < 24
+                and 0 <= int(entry.get().split(":")[0]) < 60
+            ):
+                messagebox.showerror(
+                    "Incorrect values",
+                    "Time shold be in XX:XX format or set as None if you don't want a remainder",
+                )
                 break
             else:
                 entries.append(entry.get())
@@ -242,9 +282,9 @@ def validate_input(*args):
         correct_values[1] = correct_values[1] + "?"
 
     if len(correct_values) == 5:
-        correct_values.append('y/n')
+        correct_values.append("y/n")
     else:
-        correct_values.append('measurable')
+        correct_values.append("measurable")
 
     select_type_window.destroy()
     # print(correct_values)
@@ -266,15 +306,13 @@ def open_settings():
     settings_window = Toplevel()
     settings_window.title("Settings")
     settings_window.geometry("250x500")
-    settings_label = Label(settings_window,
-                           text="Test Label").pack()
+    settings_label = Label(settings_window, text="Test Label").pack()
 
-    night_mode_btn = Button(settings_window,
-                            text="Night mode",
-                            command=change_theme(dark_theme)).pack()
+    night_mode_btn = Button(
+        settings_window, text="Night mode", command=change_theme(dark_theme)
+    ).pack()
 
-    language_btn = Button(settings_window,
-                          text="Change language").pack()
+    language_btn = Button(settings_window, text="Change language").pack()
 
 
 # this function creates folder for saves only if user has not done it before

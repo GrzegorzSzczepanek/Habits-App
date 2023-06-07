@@ -3,16 +3,19 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
 import os as os
-from visual_effects import * 
+from visual_effects import *
 
 
 def create_save_file(data):
     # print(data)
-    filename = data['name'][0] + '.csv'
-    progress_filename = data['name'][0] + '_progress' + '.csv'
+    filename = data["name"][0] + ".csv"
+    progress_filename = data["name"][0] + "_progress" + ".csv"
 
     if os.path.isfile(filename) or os.path.isfile(progress_filename):
-        tk.messagebox.showerror('Task with such name already exists', 'Create task with unique name or delete previous one')
+        tk.messagebox.showerror(
+            "Task with such name already exists",
+            "Create task with unique name or delete previous one",
+        )
         return
 
     data.to_csv(filename, index=False)
@@ -21,18 +24,29 @@ def create_save_file(data):
 
     df_basic_info = pd.read_csv(filename)
     df_progress_info = pd.DataFrame(
-        columns=['days','streak','missed', 'percentage', 'objective type','done', 'average'],
+        columns=[
+            "days",
+            "streak",
+            "missed",
+            "percentage",
+            "objective type",
+            "done",
+            "average",
+        ],
     )
     # this datafreame will be used in creating plot showing user's regularity
-    df_progress_info['days'] = [1]
-    df_progress_info['streak'] = [1]
-    df_progress_info['missed'] = [0]
-    df_progress_info['percentage'] = 100 - (df_progress_info['missed'] / df_progress_info['days']) * 100
+    df_progress_info["days"] = [1]
+    df_progress_info["streak"] = [1]
+    df_progress_info["missed"] = [0]
+    df_progress_info["percentage"] = (
+        100 - (df_progress_info["missed"] / df_progress_info["days"]) * 100
+    )
     if data.shape[1] == 7:
         # these columns are explicit to measurable objective
-        df_progress_info['done'] = [0]
-        df_progress_info['average'] = [df_progress_info['done'].sum() / df_progress_info['days']]
-
+        df_progress_info["done"] = [0]
+        df_progress_info["average"] = [
+            df_progress_info["done"].sum() / df_progress_info["days"]
+        ]
 
     progress_track_file = df_progress_info.to_csv(progress_filename, index=False)
 
@@ -59,17 +73,21 @@ def generate_content(new_window, progress_filename):
     canvas.draw()
     canvas.get_tk_widget().grid(row=2, column=6, columnspan=4, rowspan=4)
 
-    df = pd.read_csv(progress_filename + '_progress.csv')
-    df['percentage'] = 100 - (df['missed'] / df['days']) * 100
-    ax.plot(df['percentage'][0:])
+    df = pd.read_csv(progress_filename + "_progress.csv")
+    df["percentage"] = 100 - (df["missed"] / df["days"]) * 100
+    ax.plot(df["percentage"][0:])
     ax.set_ylim(0, 105)
     ax.set_xlim(0, None)
     ax.set_title(progress_filename)
     canvas.draw()
 
-    streak = int(df.iloc[-1]['streak'])
-    streak_label = tk.Label(new_window, text=f"You are on {(streak)} day streak", font=('Tahoma', 20),
-                            fg='#000').grid(row=1, column=2, columnspan=4)
+    streak = int(df.iloc[-1]["streak"])
+    streak_label = tk.Label(
+        new_window,
+        text=f"You are on {(streak)} day streak",
+        font=("Tahoma", 20),
+        fg="#000",
+    ).grid(row=1, column=2, columnspan=4)
 
     input_frame = tk.Frame(new_window)
     input_frame.grid(row=3, rowspan=6, column=1, columnspan=3)
@@ -77,22 +95,19 @@ def generate_content(new_window, progress_filename):
     for i in range(4):
         input_frame.rowconfigure(i, weight=1)
 
-    filename = progress_filename.replace('_progress', '') + '.csv'
-    # print(filename)
-    generate_form(input_frame, filename)
+    filename = progress_filename.replace("_progress", "") + ".csv"
+
+    if pd.read_csv(progress_filename + ".csv")["objective type"].iloc[0] == "y/n":
+        create_yesno_input(new_window, input_frame)
+    else:
+        create_measurable_input(new_window, input_frame)
+
 
 def validate_entry_text():
     pass
 
 
-def generate_form(input_frame, filename):
-    var1 = tk.IntVar()
-    var2 = tk.IntVar()
-    entries = [
-       tk.Label(input_frame, text='Did you do...?'),
-       tk.Radiobutton(input_frame, text='no', variable=var1, value=0),
-       tk.Radiobutton(input_frame, text='yes', variable=var2, value=1)
-    ]
+def create_yesno_input(new_window, input_frame):
 
     #print(pd.read_csv(filename).iloc[0, 'objective type'])
     # if pd.read_csv(filename)['objective type'][0] == 'measurable':
@@ -106,8 +121,8 @@ def generate_form(input_frame, filename):
     for i in range(3):  # Number of rows
         input_frame.rowconfigure(i, weight=1, minsize=50)
 
-    for j in range(3):  # Number of columns
-        input_frame.columnconfigure(j, weight=1, minsize=80)
+    for j in range(4):  # Number of columns
+        input_frame.columnconfigure(j, weight=1, minsize=200)
 
     create_yesno_input(new_window, input_frame)
     return
@@ -116,11 +131,16 @@ def generate_form(input_frame, filename):
 def create_yesno_input(new_window, input_frame):
 
     check_label = tk.Label(input_frame, text="Did you do your goal for today?").grid(row=0, column=0)
+    check_label = tk.Label(input_frame, text="Did you do your goal for today?").grid(
+        row=0, column=0
+    )
 
     yes_no_var = tk.StringVar()
     yes_no_var.set("No")
 
-    yes_button = tk.Radiobutton(input_frame, text="Yes", variable=yes_no_var, value="Yes")
+    yes_button = tk.Radiobutton(
+        input_frame, text="Yes", variable=yes_no_var, value="Yes"
+    )
     no_button = tk.Radiobutton(input_frame, text="No", variable=yes_no_var, value="No")
 
     yes_button.grid(row=0, column=0)
@@ -128,6 +148,33 @@ def create_yesno_input(new_window, input_frame):
 
     user_input = yes_no_var.get()
     print(user_input)
+
+
+def create_measurable_input(new_window, input_frame):
+    for i in range(3):  # Number of rows
+        input_frame.rowconfigure(i, weight=1, minsize=50)
+
+    for j in range(4):  # Number of columns
+        input_frame.columnconfigure(j, weight=1, minsize=200)
+
+    check_label = tk.Label(input_frame, text="Did you do your goal for today?").grid(
+        row=0, column=0
+    )
+
+    yes_no_var = tk.StringVar()
+    yes_no_var.set("No")
+
+    yes_button = tk.Radiobutton(
+        input_frame, text="Yes", variable=yes_no_var, value="Yes"
+    )
+    no_button = tk.Radiobutton(input_frame, text="No", variable=yes_no_var, value="No")
+
+    yes_button.grid(row=0, column=0)
+    no_button.grid(row=0, column=1)
+
+    user_input = yes_no_var.get()
+    print(user_input)
+
 
 def delete_save_file():
     pass
@@ -146,7 +193,7 @@ def delete_save_file():
 #     return path
 
 
-# this function sets the saves folder arbitraily  
+# this function sets the saves folder arbitraily
 # def create_saves_folder():
 #     if os.path.isdir("C:\\HbtsApp"):
 #         return

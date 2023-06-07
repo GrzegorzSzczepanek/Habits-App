@@ -1,4 +1,4 @@
-from create import  * #add_objective, open_settings
+from create import *  # add_objective, open_settings
 from tkinter import *
 
 window = Tk()
@@ -7,10 +7,10 @@ width = 700
 height = 250
 window.geometry(str(width) + "x" + str(height))
 # center_frame.grid(row=0, column=1)
-#create_saves_folder()
-#saves_path = "C:\\HbtsApp\\Saves"
+# create_saves_folder()
+# saves_path = "C:\\HbtsApp\\Saves"
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     generate_main_window_content(window, height, width)
 
 window.mainloop()
