@@ -1,19 +1,46 @@
 import tkinter as tk
 
-# create the tkinter window
-root = tk.Tk()
+def calculate():
+    selected_value = radio_var.get()
+    num = spinbox.get()
+    
+    if selected_value == "Double":
+        result = num * 2
+    elif selected_value == "Triple":
+        result = num * 3
+    else:
+        result = num
+    
+    result_label.config(text=f"Result: {result}")
 
-# create a frame with a 3x3 grid
-frame = tk.Frame(root)
-frame.grid(row=0, column=0)
+# Create the main window
+window = tk.Tk()
+window.title("Spinbox and Radio Buttons")
 
-# create a centered label
-label = tk.Label(frame, text='Hello, world!')
-label.grid(row=1, column=1, padx=10, pady=10, sticky='')
+# Create a variable to hold the selected value
+radio_var = tk.StringVar()
 
-# create a centered button
-button = tk.Button(frame, text='Click me')
-button.grid(row=2, column=1, padx=10, pady=10, sticky='')
+# Create radio buttons
+radio_double = tk.Radiobutton(window, text="Double", variable=radio_var, value="Double")
+radio_triple = tk.Radiobutton(window, text="Triple", variable=radio_var, value="Triple")
+radio_none = tk.Radiobutton(window, text="None", variable=radio_var, value="None")
 
-# start the tkinter event loop
-root.mainloop()
+# Create a Spinbox for numeric input
+spinbox = tk.Spinbox(window, from_=0, to=100)
+
+# Create a button to perform calculations
+calculate_button = tk.Button(window, text="Calculate", command=calculate)
+
+# Create a label to display the result
+result_label = tk.Label(window, text="Result: ")
+
+# Layout widgets
+radio_double.pack()
+radio_triple.pack()
+radio_none.pack()
+spinbox.pack()
+calculate_button.pack()
+result_label.pack()
+
+# Start the main loop
+window.mainloop()

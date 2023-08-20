@@ -29,15 +29,16 @@ def create_save_file(data):
             "streak",
             "missed",
             "percentage",
-            "objective type",
+            "objective_type",
             "done",
             "average",
         ],
     )
     # this datafreame will be used in creating plot showing user's regularity
     df_progress_info["days"] = [1]
-    df_progress_info["streak"] = [1]
+    df_progress_info["streak"] = [0]
     df_progress_info["missed"] = [0]
+    df_progress_info["objective_type"] = "m" if data.shape[1] == 7 else "y/n"
     df_progress_info["percentage"] = (
         100 - (df_progress_info["missed"] / df_progress_info["days"]) * 100
     )
@@ -45,7 +46,7 @@ def create_save_file(data):
         # these columns are explicit to measurable objective
         df_progress_info["done"] = [0]
         df_progress_info["average"] = [
-            df_progress_info["done"].sum() / df_progress_info["days"]
+            df_progress_info["done"].sum() / sum(df_progress_info["days"])
         ]
 
     progress_track_file = df_progress_info.to_csv(progress_filename, index=False)
@@ -59,19 +60,14 @@ def open_widndow(progress_filename, window):
     global validate_cmd
     validate_cmd = window.register(validate_entry_text)
 
-    # create grid for a window
-    for i in range(9):
-        new_window.columnconfigure(i, weight=1, minsize=80)
-        new_window.rowconfigure(i, weight=1, minsize=50)
-
     generate_content(new_window, progress_filename)
 
 
-def generate_content(new_window, progress_filename):
+def generate_plot(new_window, progress_filename):
     fig, ax = plt.subplots()
     canvas = FigureCanvasTkAgg(fig, master=new_window)
     canvas.draw()
-    canvas.get_tk_widget().grid(row=2, column=6, columnspan=4, rowspan=4)
+    canvas.get_tk_widget().grid(row=5, column=6, columnspan=3, rowspan=3)
 
     df = pd.read_csv(progress_filename + "_progress.csv")
     df["percentage"] = 100 - (df["missed"] / df["days"]) * 100
@@ -81,104 +77,91 @@ def generate_content(new_window, progress_filename):
     ax.set_title(progress_filename)
     canvas.draw()
 
+    return df
+
+
+def generate_content(new_window, progress_filename):
+
+    df = generate_plot(new_window, progress_filename)
+
     streak = int(df.iloc[-1]["streak"])
     streak_label = tk.Label(
         new_window,
         text=f"You are on {(streak)} day streak",
         font=("Tahoma", 20),
         fg="#000",
-    ).grid(row=1, column=2, columnspan=4)
+    ).grid(row=1, column=1, columnspan=4, padx=20, pady=20)
 
     input_frame = tk.Frame(new_window)
     input_frame.grid(row=3, rowspan=6, column=1, columnspan=3)
 
-    for i in range(4):
-        input_frame.rowconfigure(i, weight=1)
-
     filename = progress_filename.replace("_progress", "") + ".csv"
+    print
+    question = pd.read_csv(progress_filename + ".csv")["question"].iloc[0]
 
     if pd.read_csv(progress_filename + ".csv")["objective type"].iloc[0] == "y/n":
-        create_yesno_input(new_window, input_frame)
+        create_yesno_input(new_window, input_frame, question, "y/n")
     else:
-        create_measurable_input(new_window, input_frame)
+        create_yesno_input(new_window, input_frame, question, "m")
+        #create_measurable_input(new_window, input_frame, question)
 
 
 def validate_entry_text():
     pass
 
 
-def create_yesno_input(new_window, input_frame):
+def create_yesno_input(new_window, input_frame, question, objective_type):
 
-    #print(pd.read_csv(filename).iloc[0, 'objective type'])
-    # if pd.read_csv(filename)['objective type'][0] == 'measurable':
-    #     entries.append(EntryWithPlaceholder(input_frame, 'unit f.e. Kilometers',
-    #                                          validate="key",
-    #                                            validatecommand=(validate_cmd, '%S')))
-
-    for i in range(len(entries)):
-        entries[i].grid(row=i)
-
-    for i in range(3):  # Number of rows
-        input_frame.rowconfigure(i, weight=1, minsize=50)
-
-    for j in range(4):  # Number of columns
-        input_frame.columnconfigure(j, weight=1, minsize=200)
-
-    create_yesno_input(new_window, input_frame)
-    return
-
-
-def create_yesno_input(new_window, input_frame):
-
-    check_label = tk.Label(input_frame, text="Did you do your goal for today?").grid(row=0, column=0)
-    check_label = tk.Label(input_frame, text="Did you do your goal for today?").grid(
-        row=0, column=0
+    check_label = tk.Label(input_frame,
+                           text=question,
+                           font=("Tahoma", 15)
     )
+    check_label.grid(row=0, column=0, columnspan=2)
 
     yes_no_var = tk.StringVar()
     yes_no_var.set("No")
 
-    yes_button = tk.Radiobutton(
-        input_frame, text="Yes", variable=yes_no_var, value="Yes"
+    yes_button = tk.Radiobutton(input_frame,
+                                text="Yes",
+                                variable=yes_no_var,
+                                value="Yes",
+                                font=("Tahoma", 10)
     )
-    no_button = tk.Radiobutton(input_frame, text="No", variable=yes_no_var, value="No")
-
-    yes_button.grid(row=0, column=0)
-    no_button.grid(row=0, column=1)
-
-    user_input = yes_no_var.get()
-    print(user_input)
-
-
-def create_measurable_input(new_window, input_frame):
-    for i in range(3):  # Number of rows
-        input_frame.rowconfigure(i, weight=1, minsize=50)
-
-    for j in range(4):  # Number of columns
-        input_frame.columnconfigure(j, weight=1, minsize=200)
-
-    check_label = tk.Label(input_frame, text="Did you do your goal for today?").grid(
-        row=0, column=0
+    no_button = tk.Radiobutton(input_frame,
+                               text="No",
+                               variable=yes_no_var,
+                               value="No",
+                               font=("Tahoma", 10)
     )
 
-    yes_no_var = tk.StringVar()
-    yes_no_var.set("No")
+    yes_button.grid(row=1, column=0)
+    no_button.grid(row=1, column=1)
 
-    yes_button = tk.Radiobutton(
-        input_frame, text="Yes", variable=yes_no_var, value="Yes"
+    submit_button = tk.Button(input_frame,
+                              text="submit answers",
+                              command=use_input,
+                              font=("Tahoma", 15)
     )
-    no_button = tk.Radiobutton(input_frame, text="No", variable=yes_no_var, value="No")
+    # only one difference between measurable is that it has one spinbox more so I need to prevent submit button overlapping spinbox
+    if objective_type == "y/n": 
+        submit_button.grid(row=3, column=0, columnspan=2)
+    else:
+        tk.Label(input_frame, text="Type how many things of your objective you've done").grid(row=3, column=0, columnspan=2)
+        tk.Spinbox(input_frame, from_=0).grid(row=4, column=0, columnspan=2)
+        submit_button.grid(row=5, column=0, columnspan=2)
 
-    yes_button.grid(row=0, column=0)
-    no_button.grid(row=0, column=1)
-
-    user_input = yes_no_var.get()
-    print(user_input)
+# def create_measurable_input(new_window, input_frame, question):
+#     # this part is basically the same
+#     create_yesno_input(new_window, input_frame, question)
+#     spinbox = tk.Spinbox(input_frame, from_=0, to=100).grid(row=3, column=0, columnspan=2)
 
 
 def delete_save_file():
     pass
 
+
+def use_input():
+    pass
 
 # this function creates folder for saves only if user has not done it before
 # def create_saves_folder():
