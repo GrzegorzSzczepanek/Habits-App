@@ -18,30 +18,38 @@ def generate_main_window_content(window, height=700, width=250):
     # for i in _window_widgets:
     #     i.destroy()
     global center_frame
-    center_frame = Frame(window)
-    center_frame.pack(side="right")
+    center_frame = tk.Frame(window)
+    center_frame.pack(side="right", fill="both", expand=True)
+    center_frame.grid_columnconfigure(0, weight=1)
 
-    menu_frame = Frame(window, bg="#d45", height=height, width=int(width))
+    menu_frame = tk.Frame(window, bg="#d45", height=int(height), width=int(width))
+    menu_frame.grid_columnconfigure(0, weight=1)
     menu_frame.pack(side="left", fill="y")
 
-    add_objective_btn = Button(
+    font = ("Tahoma", 20)
+
+    add_objective_btn = tk.Button(
         menu_frame,
         text="Add Objective",
         command=add_objective,
-        padx=10,
-        pady=10,
+        font=font,
+        pady=10
     )
-    add_objective_btn.pack(pady=20, padx=20)
+    add_objective_btn.grid(row=0, sticky="ew")
 
-    settings_btn = Button(
-        menu_frame, text="Settings", command=open_settings, padx=10, pady=10, width=10
+    settings_btn = tk.Button(menu_frame,
+                          text="Settings",
+                          command=open_settings,
+                          pady=10,
+                          width=10,
+                          font=font
     )
-    settings_btn.pack(pady=20, padx=20)
+    settings_btn.grid(row=1, sticky="ew")
 
-    create_buttons_from_saves(center_frame)
+    create_buttons_from_saves(center_frame, font)
 
 
-def create_buttons_from_saves(center_frame):
+def create_buttons_from_saves(center_frame, font):
     csv_file_saves = glob.glob("*.csv")
     # print(csv_file_saves)
     for index, i in enumerate(csv_file_saves):
@@ -53,53 +61,57 @@ def create_buttons_from_saves(center_frame):
                 text=data["name"][0],
                 bg="#222",
                 fg="#EEE",
+                pady=30,
+                font=font,
                 command=lambda x=current_filename: open_widndow(
                     x, center_frame.winfo_toplevel()
                 ),
-            ).grid(row=index, column=1)
+            ).grid(row=index, columnspan=2, sticky="we")
 
 
 # Done - It is meant just to create two buttons
 def create_starting_btns():
     global measurable_objective_btn, yes_no_objective_btn
     yes_no_objective_btn = Button(
-        select_type_window,
+        select_type_frame,
         text="YES/NO\nf.e. Did you wake up at 6AM",
         bg="#222",
         fg="#FFF",
         command=add_yes_no_objective,
-    ).grid(row=0)
+    ).grid(row=0, sticky="ew")
 
     measurable_objective_btn = Button(
-        select_type_window,
+        select_type_frame,
         text="Measurable Objective\nf.e. How many book pages have you read today",
         bg="#222",
         fg="#FFF",
         command=add_measurable_objective,
-    ).grid(row=1)
+    ).grid(row=1, sticky="ew")
 
 
 # Done - this function is supposed just to make a window
 def add_objective():
-    global select_type_window
     select_type_window = Toplevel()
     select_type_window.resizable(False, False)
+    global select_type_frame
+    select_type_frame = tk.Frame(select_type_window)
+    select_type_frame.pack(fill="both", expand=True)
     create_starting_btns()
 
 
 # Done but there is space for improvement like making length limit for name cell
 def add_yes_no_objective():
     global entries
-    _button_list = select_type_window.winfo_children()
+    _button_list = select_type_frame.winfo_children()
     _button_list[0].destroy()
     _button_list[1].destroy()
 
     labels = [
-        Label(select_type_window, text="Name of task"),
-        Label(select_type_window, text="Question"),
-        Label(select_type_window, text="Remainder"),
-        Label(select_type_window, text="Notes"),
-        Label(select_type_window, text="Frequency per week"),
+        Label(select_type_frame, text="Name of task"),
+        Label(select_type_frame, text="Question"),
+        Label(select_type_frame, text="Remainder"),
+        Label(select_type_frame, text="Notes"),
+        Label(select_type_frame, text="Frequency per week"),
     ]
     for i in range(0, len(labels)):
         labels[i].grid(row=i, column=0)
@@ -111,37 +123,37 @@ def add_yes_no_objective():
     clicked.set("everyday")
 
     entries = [
-        EntryWithPlaceholder(select_type_window, "f.e Wake up at 7AM"),
-        EntryWithPlaceholder(select_type_window, "F.e. did you wake up early?"),
-        EntryWithPlaceholder(select_type_window, "18:00/None"),
-        EntryWithPlaceholder(select_type_window, "Any additional information"),
-        OptionMenu(select_type_window, clicked, *options),
+        EntryWithPlaceholder(select_type_frame, "f.e Wake up at 7AM"),
+        EntryWithPlaceholder(select_type_frame, "F.e. did you wake up early?"),
+        EntryWithPlaceholder(select_type_frame, "18:00/None"),
+        EntryWithPlaceholder(select_type_frame, "Any additional information"),
+        OptionMenu(select_type_frame, clicked, *options),
     ]
     for i in range(0, len(entries)):
         entries[i].grid(row=i, column=1)
 
-    Button(select_type_window, text="Back", command=get_back).grid(
+    Button(select_type_frame, text="Back", command=get_back).grid(
         row=len(entries), column=0
     )
-    Button(select_type_window, text="Add", command=use_input).grid(
+    Button(select_type_frame, text="Add", command=use_input).grid(
         row=len(entries), column=1
     )
 
 
 # Done but there is space for improvement
 def add_measurable_objective():
-    _button_list = select_type_window.winfo_children()
+    _button_list = select_type_frame.winfo_children()
     _button_list[0].destroy()
     _button_list[1].destroy()
     global entries
 
     labels = [
-        Label(select_type_window, text="Name of task"),
-        Label(select_type_window, text="Question"),
-        Label(select_type_window, text="Remainder"),
-        Label(select_type_window, text="Notes"),
-        Label(select_type_window, text="Unit f.e kilometers"),
-        Label(select_type_window, text="Frequency per week"),
+        Label(select_type_frame, text="Name of task"),
+        Label(select_type_frame, text="Question"),
+        Label(select_type_frame, text="Remainder"),
+        Label(select_type_frame, text="Notes"),
+        Label(select_type_frame, text="Unit f.e kilometers"),
+        Label(select_type_frame, text="Frequency per week"),
     ]
     for i in range(0, len(labels)):
         labels[i].grid(row=i, column=0)
@@ -151,20 +163,20 @@ def add_measurable_objective():
     clicked = StringVar()
     clicked.set("everyday")
     entries = [
-        EntryWithPlaceholder(select_type_window, "f.e Read pages of the book"),
-        EntryWithPlaceholder(select_type_window, "How many kilometers did you run?"),
-        EntryWithPlaceholder(select_type_window, "21:37/None"),
-        EntryWithPlaceholder(select_type_window, "Any additional information"),
-        EntryWithPlaceholder(select_type_window, "f.e Kilometers"),
-        OptionMenu(select_type_window, clicked, *options),
+        EntryWithPlaceholder(select_type_frame, "f.e Read pages of the book"),
+        EntryWithPlaceholder(select_type_frame, "How many kilometers did you run?"),
+        EntryWithPlaceholder(select_type_frame, "21:37/None"),
+        EntryWithPlaceholder(select_type_frame, "Any additional information"),
+        EntryWithPlaceholder(select_type_frame, "f.e Kilometers"),
+        OptionMenu(select_type_frame, clicked, *options),
     ]
     for i in range(0, len(entries)):
         entries[i].grid(row=i, column=1)
 
-    Button(select_type_window, text="Back", command=get_back).grid(
+    Button(select_type_frame, text="Back", command=get_back).grid(
         row=len(entries), column=0
     )
-    Button(select_type_window, text="Add", command=use_input).grid(
+    Button(select_type_frame, text="Add", command=use_input).grid(
         row=len(entries), column=1
     )
 
@@ -286,14 +298,14 @@ def validate_input(*args):
     else:
         correct_values.append("measurable")
 
-    select_type_window.destroy()
+    select_type_frame.destroy()
     # print(correct_values)
     return correct_values
 
 
 # Done
 def get_back():
-    _button_list = select_type_window.winfo_children()
+    _button_list = select_type_frame.winfo_children()
     for i in _button_list:
         i.destroy()
     create_starting_btns()
@@ -302,17 +314,20 @@ def get_back():
 # Partly done
 def open_settings():
     dark_theme = True
+    # menu_frame.pack(side="left", fill="y")
 
     settings_window = Toplevel()
     settings_window.title("Settings")
+    settings_window.grid_columnconfigure(0, weight=1)
     settings_window.geometry("250x500")
-    settings_label = Label(settings_window, text="Test Label").pack()
+    settings_label = Label(settings_window, text="Test Label")
 
-    night_mode_btn = Button(
-        settings_window, text="Night mode", command=change_theme(dark_theme)
-    ).pack()
+    night_mode_btn = Button(settings_window,
+                            text="Night mode",
+                            command=change_theme(dark_theme)
+    ).grid(row=1, sticky="ew")
 
-    language_btn = Button(settings_window, text="Change language").pack()
+    language_btn = Button(settings_window, text="Change language").grid(row=2, sticky="ew")
 
 
 # this function creates folder for saves only if user has not done it before

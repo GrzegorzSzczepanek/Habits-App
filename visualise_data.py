@@ -96,13 +96,12 @@ def generate_content(new_window, progress_filename):
     input_frame.grid(row=3, rowspan=6, column=1, columnspan=3)
 
     filename = progress_filename.replace("_progress", "") + ".csv"
-    print
     question = pd.read_csv(progress_filename + ".csv")["question"].iloc[0]
 
     if pd.read_csv(progress_filename + ".csv")["objective type"].iloc[0] == "y/n":
-        create_yesno_input(new_window, input_frame, question, "y/n")
+        create_input(new_window, input_frame, question, "y/n")
     else:
-        create_yesno_input(new_window, input_frame, question, "m")
+        create_input(new_window, input_frame, question, "m")
         #create_measurable_input(new_window, input_frame, question)
 
 
@@ -110,7 +109,7 @@ def validate_entry_text():
     pass
 
 
-def create_yesno_input(new_window, input_frame, question, objective_type):
+def create_input(new_window, input_frame, question, objective_type):
 
     check_label = tk.Label(input_frame,
                            text=question,
@@ -160,7 +159,7 @@ def delete_save_file():
     pass
 
 
-def use_input():
+def use_input(filename):
     pass
 
 # this function creates folder for saves only if user has not done it before
