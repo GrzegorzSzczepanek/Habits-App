@@ -102,7 +102,7 @@ def generate_content(new_window, progress_filename):
         create_input(new_window, input_frame, question, "y/n")
     else:
         create_input(new_window, input_frame, question, "m")
-        #create_measurable_input(new_window, input_frame, question)
+        # create_measurable_input(new_window, input_frame, question)
 
 
 def validate_entry_text():
@@ -111,43 +111,35 @@ def validate_entry_text():
 
 def create_input(new_window, input_frame, question, objective_type):
 
-    check_label = tk.Label(input_frame,
-                           text=question,
-                           font=("Tahoma", 15)
-    )
+    check_label = tk.Label(input_frame, text=question, font=("Tahoma", 15))
     check_label.grid(row=0, column=0, columnspan=2)
 
     yes_no_var = tk.StringVar()
     yes_no_var.set("No")
 
-    yes_button = tk.Radiobutton(input_frame,
-                                text="Yes",
-                                variable=yes_no_var,
-                                value="Yes",
-                                font=("Tahoma", 10)
+    yes_button = tk.Radiobutton(
+        input_frame, text="Yes", variable=yes_no_var, value="Yes", font=("Tahoma", 10)
     )
-    no_button = tk.Radiobutton(input_frame,
-                               text="No",
-                               variable=yes_no_var,
-                               value="No",
-                               font=("Tahoma", 10)
+    no_button = tk.Radiobutton(
+        input_frame, text="No", variable=yes_no_var, value="No", font=("Tahoma", 10)
     )
 
     yes_button.grid(row=1, column=0)
     no_button.grid(row=1, column=1)
 
-    submit_button = tk.Button(input_frame,
-                              text="submit answers",
-                              command=use_input,
-                              font=("Tahoma", 15)
+    submit_button = tk.Button(
+        input_frame, text="submit answers", command=use_input, font=("Tahoma", 15)
     )
     # only one difference between measurable is that it has one spinbox more so I need to prevent submit button overlapping spinbox
-    if objective_type == "y/n": 
+    if objective_type == "y/n":
         submit_button.grid(row=3, column=0, columnspan=2)
     else:
-        tk.Label(input_frame, text="Type how many things of your objective you've done").grid(row=3, column=0, columnspan=2)
+        tk.Label(
+            input_frame, text="Type how many things of your objective you've done"
+        ).grid(row=3, column=0, columnspan=2)
         tk.Spinbox(input_frame, from_=0).grid(row=4, column=0, columnspan=2)
         submit_button.grid(row=5, column=0, columnspan=2)
+
 
 # def create_measurable_input(new_window, input_frame, question):
 #     # this part is basically the same
@@ -161,6 +153,7 @@ def delete_save_file():
 
 def use_input(filename):
     pass
+
 
 # this function creates folder for saves only if user has not done it before
 # def create_saves_folder():

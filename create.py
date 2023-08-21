@@ -14,9 +14,6 @@ from visualise_data import *
 
 
 def generate_main_window_content(window, height=700, width=250):
-    # _window_widgets = window.winfo_children()
-    # for i in _window_widgets:
-    #     i.destroy()
     global center_frame
     center_frame = tk.Frame(window)
     center_frame.pack(side="right", fill="both", expand=True)
@@ -29,20 +26,12 @@ def generate_main_window_content(window, height=700, width=250):
     font = ("Tahoma", 20)
 
     add_objective_btn = tk.Button(
-        menu_frame,
-        text="Add Objective",
-        command=add_objective,
-        font=font,
-        pady=10
+        menu_frame, text="Add Objective", command=add_objective, font=font, pady=10
     )
     add_objective_btn.grid(row=0, sticky="ew")
 
-    settings_btn = tk.Button(menu_frame,
-                          text="Settings",
-                          command=open_settings,
-                          pady=10,
-                          width=10,
-                          font=font
+    settings_btn = tk.Button(
+        menu_frame, text="Settings", command=open_settings, pady=10, width=10, font=font
     )
     settings_btn.grid(row=1, sticky="ew")
 
@@ -69,9 +58,7 @@ def create_buttons_from_saves(center_frame, font):
             ).grid(row=index, columnspan=2, sticky="we")
 
 
-# Done - It is meant just to create two buttons
 def create_starting_btns():
-    global measurable_objective_btn, yes_no_objective_btn
     yes_no_objective_btn = Button(
         select_type_frame,
         text="YES/NO\nf.e. Did you wake up at 6AM",
@@ -89,7 +76,6 @@ def create_starting_btns():
     ).grid(row=1, sticky="ew")
 
 
-# Done - this function is supposed just to make a window
 def add_objective():
     select_type_window = Toplevel()
     select_type_window.resizable(False, False)
@@ -99,7 +85,6 @@ def add_objective():
     create_starting_btns()
 
 
-# Done but there is space for improvement like making length limit for name cell
 def add_yes_no_objective():
     global entries
     _button_list = select_type_frame.winfo_children()
@@ -140,7 +125,6 @@ def add_yes_no_objective():
     )
 
 
-# Done but there is space for improvement
 def add_measurable_objective():
     _button_list = select_type_frame.winfo_children()
     _button_list[0].destroy()
@@ -181,7 +165,6 @@ def add_measurable_objective():
     )
 
 
-# it has to check wheather it deals with measurable or yes/no objective
 def use_input():
     valid_input = validate_input()
     if len(valid_input) == 6:
@@ -211,7 +194,7 @@ def use_input():
         )
 
     create_save_file(obj_df)
-    create_buttons_from_saves(center_frame)
+    create_buttons_from_saves(center_frame, font=("Tahoma", 20))
 
 
 def validate_input(*args):
@@ -298,8 +281,8 @@ def validate_input(*args):
     else:
         correct_values.append("measurable")
 
-    select_type_frame.destroy()
-    # print(correct_values)
+    select_type_frame.winfo_toplevel().destroy()
+
     return correct_values
 
 
@@ -322,12 +305,13 @@ def open_settings():
     settings_window.geometry("250x500")
     settings_label = Label(settings_window, text="Test Label")
 
-    night_mode_btn = Button(settings_window,
-                            text="Night mode",
-                            command=change_theme(dark_theme)
+    night_mode_btn = Button(
+        settings_window, text="Night mode", command=change_theme(dark_theme)
     ).grid(row=1, sticky="ew")
 
-    language_btn = Button(settings_window, text="Change language").grid(row=2, sticky="ew")
+    language_btn = Button(settings_window, text="Change language").grid(
+        row=2, sticky="ew"
+    )
 
 
 # this function creates folder for saves only if user has not done it before
