@@ -2,10 +2,10 @@
 This app is created to measure and visualise users goals and progress.
 
 # Goals
-It will allow user to track and visualise their progress, add new goals, and
+It will allow user to add new goals and track track them and visualise their progress.
 
 # How it is done
-The app is built using Pandas, os, glob and TkInter libraries.
+The app is built using Pandas, os, glob, matplotlib and TkInter libraries.
 
 # How does it look?
 Ugly tbh
