@@ -10,7 +10,7 @@ The app is built using Pandas, os, glob and TkInter libraries.
 # How does it look?
 Ugly tbh
 
-## Adding ne objective to your plans
+## Adding new objective to your plans
 ![image](https://github.com/GrzegorzSzczepanek/Habits-App/assets/113286903/74c9f696-5ed0-4b6b-b1ce-4acf29f1137f)
 ![image](https://github.com/GrzegorzSzczepanek/Habits-App/assets/113286903/d4f34ed7-a2d8-493d-a488-05d779f4cd38)
 
