@@ -92,13 +92,20 @@ def generate_content(new_window, progress_filename, remake_objectives_button_fun
         fg="#000",
     ).grid(row=1, column=1, columnspan=4, padx=20, pady=20)
 
+    notes = pd.read_csv(progress_filename + ".csv")["notes"].iloc[0]
+    notes_label = tk.Label(
+        new_window,
+        text=f"My notes:\n{notes}",
+        font=("Tahoma", 15),
+        relief="sunken"
+    ).grid(row=7, column=0, padx=20, pady=20)
     delete_button = tk.Button(
         new_window,
         text="Delete this Objective",
         font=("Tahoma", 15),
         fg="#800",
         command=lambda x = progress_filename, y = new_window, z = remake_objectives_button_function: delete_save_file(x, y, z)
-    ).grid(row=0, column=7)
+    ).grid(row=1, column=7)
 
     input_frame = tk.Frame(new_window)
     input_frame.grid(row=3, rowspan=6, column=1, columnspan=3)
@@ -107,7 +114,7 @@ def generate_content(new_window, progress_filename, remake_objectives_button_fun
     question = pd.read_csv(progress_filename + ".csv")["question"].iloc[0]
 
     if pd.read_csv(progress_filename + ".csv")["objective type"].iloc[0] == "y/n":
-        create_input(new_window, input_frame, question, "y/n")
+        create_input(new_window, input_frame, question, "y/n", filename)
     else:
         create_input(new_window, input_frame, question, "m")
         # create_measurable_input(new_window, input_frame, question)
@@ -117,7 +124,7 @@ def validate_entry_text():
     pass
 
 
-def create_input(new_window, input_frame, question, objective_type):
+def create_input(new_window, input_frame, question, objective_type, filename):
 
     check_label = tk.Label(input_frame, text=question, font=("Tahoma", 15))
     check_label.grid(row=0, column=0, columnspan=2)
@@ -140,7 +147,7 @@ def create_input(new_window, input_frame, question, objective_type):
     )
     # only one difference between measurable is that it has one spinbox more so I need to prevent submit button overlapping spinbox
     if objective_type == "y/n":
-        submit_button.config(command=lambda x = yes_no_var.get: use_input(x))
+        submit_button.config(command=lambda x = filename, y = yes_no_var.get: use_input(x))
         submit_button.grid(row=3, column=0, columnspan=2)
     else:
         tk.Label(
@@ -148,7 +155,7 @@ def create_input(new_window, input_frame, question, objective_type):
         ).grid(row=3, column=0, columnspan=2)
 
         tk.Spinbox(input_frame, from_=0, to=2^31-1, increment=1).grid(row=4, column=0, columnspan=2)
-        submit_button.config(command=lambda x = yes_no_var.get, y = "spinbox_value.get": use_input(x, y))
+        submit_button.config(command=lambda x = filename, y = yes_no_var.get, z = "spinbox_value.get": use_input(x, y, z))
         submit_button.grid(row=5, column=0, columnspan=2)
 
 
@@ -160,8 +167,28 @@ def delete_save_file(filename, window, remake_objectives_button_function):
     window.destroy()
     remake_objectives_button_function[0](remake_objectives_button_function[1],remake_objectives_button_function[2])
 
-def use_input(filename):
-    pass
+
+def calculate_current_streak(streak_column):
+    current_streak = 0
+    max_streak = 0
+
+    for streak in streak_column:
+        if streak != 0:
+            current_streak += 1
+            max_streak = max(max_streak, current_streak)
+        else:
+            current_streak = 0
+
+    return max_streak
+
+
+def use_input(filename, radio_input, spinbox_input=None):
+    df = pd.read_csv(filename)
+    if spinbox_input == None:
+        #df['days']
+        pass
+    else:
+        pass
 
 
 # this function creates folder for saves only if user has not done it before

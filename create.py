@@ -14,6 +14,7 @@ from visualise_data import create_save_file, open_window
 
 
 def generate_main_window_content(window, height=700, width=250):
+    window.title("Habits app")
     global center_frame
     center_frame = tk.Frame(window)
     center_frame.pack(side="right", fill="both", expand=True)
@@ -79,7 +80,8 @@ def create_starting_btns():
 
 def add_objective():
     select_type_window = Toplevel()
-    select_type_window.resizable(False, False)
+    select_type_window.title("Add objective")
+    #select_type_window.resizable(False, False)
     global select_type_frame
     select_type_frame = tk.Frame(select_type_window)
     select_type_frame.pack(fill="both", expand=True)
@@ -112,7 +114,7 @@ def add_yes_no_objective():
         EntryWithPlaceholder(select_type_frame, "f.e Wake up at 7AM"),
         EntryWithPlaceholder(select_type_frame, "F.e. did you wake up early?"),
         EntryWithPlaceholder(select_type_frame, "18:00/None"),
-        EntryWithPlaceholder(select_type_frame, "Any additional information"),
+        EntryWithPlaceholder(select_type_frame, "Any useful info (max 100 characters)"),
         OptionMenu(select_type_frame, clicked, *options),
     ]
     for i in range(0, len(entries)):
@@ -151,7 +153,7 @@ def add_measurable_objective():
         EntryWithPlaceholder(select_type_frame, "f.e Read pages of the book"),
         EntryWithPlaceholder(select_type_frame, "How many kilometers did you run?"),
         EntryWithPlaceholder(select_type_frame, "21:37/None"),
-        EntryWithPlaceholder(select_type_frame, "Any additional information"),
+        EntryWithPlaceholder(select_type_frame, "Any useful info (max 100 characters)"),
         EntryWithPlaceholder(select_type_frame, "f.e Kilometers"),
         OptionMenu(select_type_frame, clicked, *options),
     ]
@@ -267,6 +269,12 @@ def validate_input(*args):
             else:
                 entries.append(entry.get())
 
+        # Not working lenght of Notes validation
+        # elif i == 3 and len(entry.get()) > 100:
+        #     messagebox.showerror(
+        #             "Incorrect values",
+        #             "Notes should be shorter than 100 characters, including spaces and special characters",
+        #         )
         elif isinstance(entry, Entry):
             correct_values.append(entry.get())
         else:
@@ -295,8 +303,6 @@ def get_back():
 
 
 def open_settings():
-    dark_theme = True
-
     settings_window = Toplevel()
     settings_window.title("Settings")
     settings_window.grid_columnconfigure(0, weight=1)
@@ -304,7 +310,7 @@ def open_settings():
     settings_label = Label(settings_window, text="Test Label")
 
     night_mode_btn = Button(
-        settings_window, text="Night mode", command=lambda x = dark_theme: change_theme(x)
+        settings_window, text="Night mode", command=change_theme
     ).grid(row=1, sticky="ew")
 
     language_btn = Button(settings_window, text="Change language").grid(
