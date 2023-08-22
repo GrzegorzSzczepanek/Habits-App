@@ -52,15 +52,15 @@ def create_save_file(data):
     progress_track_file = df_progress_info.to_csv(progress_filename, index=False)
 
 
-def open_widndow(progress_filename, window):
+def open_window(progress_filename, window, remake_objectives_button_function):
     new_window = tk.Toplevel(window)
     new_window.title("New Window")
-    new_window.geometry("800x500")
+    new_window.geometry("1000x700")
 
     global validate_cmd
     validate_cmd = window.register(validate_entry_text)
 
-    generate_content(new_window, progress_filename)
+    generate_content(new_window, progress_filename, remake_objectives_button_function)
 
 
 def generate_plot(new_window, progress_filename):
@@ -80,7 +80,7 @@ def generate_plot(new_window, progress_filename):
     return df
 
 
-def generate_content(new_window, progress_filename):
+def generate_content(new_window, progress_filename, remake_objectives_button_function):
 
     df = generate_plot(new_window, progress_filename)
 
@@ -91,6 +91,14 @@ def generate_content(new_window, progress_filename):
         font=("Tahoma", 20),
         fg="#000",
     ).grid(row=1, column=1, columnspan=4, padx=20, pady=20)
+
+    delete_button = tk.Button(
+        new_window,
+        text="Delete this Objective",
+        font=("Tahoma", 15),
+        fg="#800",
+        command=lambda x = progress_filename, y = new_window, z = remake_objectives_button_function: delete_save_file(x, y, z)
+    ).grid(row=0, column=7)
 
     input_frame = tk.Frame(new_window)
     input_frame.grid(row=3, rowspan=6, column=1, columnspan=3)
@@ -128,28 +136,29 @@ def create_input(new_window, input_frame, question, objective_type):
     no_button.grid(row=1, column=1)
 
     submit_button = tk.Button(
-        input_frame, text="submit answers", command=use_input, font=("Tahoma", 15)
+        input_frame, text="submit answers", font=("Tahoma", 15)
     )
     # only one difference between measurable is that it has one spinbox more so I need to prevent submit button overlapping spinbox
     if objective_type == "y/n":
+        submit_button.config(command=lambda x = yes_no_var.get: use_input(x))
         submit_button.grid(row=3, column=0, columnspan=2)
     else:
         tk.Label(
             input_frame, text="Type how many things of your objective you've done"
         ).grid(row=3, column=0, columnspan=2)
-        tk.Spinbox(input_frame, from_=0).grid(row=4, column=0, columnspan=2)
+
+        tk.Spinbox(input_frame, from_=0, to=2^31-1, increment=1).grid(row=4, column=0, columnspan=2)
+        submit_button.config(command=lambda x = yes_no_var.get, y = "spinbox_value.get": use_input(x, y))
         submit_button.grid(row=5, column=0, columnspan=2)
 
 
-# def create_measurable_input(new_window, input_frame, question):
-#     # this part is basically the same
-#     create_yesno_input(new_window, input_frame, question)
-#     spinbox = tk.Spinbox(input_frame, from_=0, to=100).grid(row=3, column=0, columnspan=2)
-
-
-def delete_save_file():
-    pass
-
+def delete_save_file(filename, window, remake_objectives_button_function):
+    os.remove(filename + ".csv")
+    os.remove(filename + "_progress.csv")
+    from tkinter import messagebox
+    messagebox.showinfo("Success", f"{filename} has been deleted successfully.")
+    window.destroy()
+    remake_objectives_button_function[0](remake_objectives_button_function[1],remake_objectives_button_function[2])
 
 def use_input(filename):
     pass

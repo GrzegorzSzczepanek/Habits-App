@@ -4,7 +4,7 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog
 from visual_effects import *
-from visualise_data import *
+from visualise_data import create_save_file, open_window
 
 
 # saves_path = '/home/grzes/Documents/saves'
@@ -34,15 +34,16 @@ def generate_main_window_content(window, height=700, width=250):
         menu_frame, text="Settings", command=open_settings, pady=10, width=10, font=font
     )
     settings_btn.grid(row=1, sticky="ew")
-
     create_buttons_from_saves(center_frame, font)
 
 
 def create_buttons_from_saves(center_frame, font):
+    for button in center_frame.winfo_children():
+        button.destroy()
     csv_file_saves = glob.glob("*.csv")
     # print(csv_file_saves)
     for index, i in enumerate(csv_file_saves):
-        if "progress" not in i:
+        if "progress" not in i :
             data = pd.read_csv(i)
             current_filename = data["name"][0]
             btn = Button(
@@ -52,8 +53,8 @@ def create_buttons_from_saves(center_frame, font):
                 fg="#EEE",
                 pady=30,
                 font=font,
-                command=lambda x=current_filename: open_widndow(
-                    x, center_frame.winfo_toplevel()
+                command=lambda x=current_filename: open_window(
+                    x, center_frame.winfo_toplevel(), [create_buttons_from_saves, center_frame, font]
                 ),
             ).grid(row=index, columnspan=2, sticky="we")
 
@@ -286,7 +287,6 @@ def validate_input(*args):
     return correct_values
 
 
-# Done
 def get_back():
     _button_list = select_type_frame.winfo_children()
     for i in _button_list:
@@ -294,10 +294,8 @@ def get_back():
     create_starting_btns()
 
 
-# Partly done
 def open_settings():
     dark_theme = True
-    # menu_frame.pack(side="left", fill="y")
 
     settings_window = Toplevel()
     settings_window.title("Settings")
@@ -306,7 +304,7 @@ def open_settings():
     settings_label = Label(settings_window, text="Test Label")
 
     night_mode_btn = Button(
-        settings_window, text="Night mode", command=change_theme(dark_theme)
+        settings_window, text="Night mode", command=lambda x = dark_theme: change_theme(x)
     ).grid(row=1, sticky="ew")
 
     language_btn = Button(settings_window, text="Change language").grid(
