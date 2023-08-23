@@ -70,14 +70,26 @@ def generate_plot(new_window, progress_filename):
     canvas.get_tk_widget().grid(row=5, column=6, columnspan=3, rowspan=3)
 
     df = pd.read_csv(progress_filename + "_progress.csv")
-    df["percentage"] = 100 - (df["missed"] / df["days"]) * 100
-    ax.plot(df["percentage"][0:])
-    ax.set_ylim(0, 105)
-    ax.set_xlim(0, None)
-    ax.set_title(progress_filename)
+
+    if df["objective_type"].iloc[0] == "y/n":
+        ax.plot(df["percentage"][0:], label="Percent of days when you achieved your goal")
+        ax.set_ylim(0, 105)
+        ax.set_xlim(0, None)
+        ax.set_title(progress_filename)
+        ax.legend(loc="upper left")
+        ax.set_title(progress_filename)
+    else:
+        ax.plot(df["done"][0:], label="Acheved things per time unit")
+        ax.set_ylim(0, None)
+        ax.set_xlim(0, None)
+        ax.set_title(progress_filename)
+        ax.legend(loc="upper left")
+        ax.set_title(progress_filename)
+
     canvas.draw()
 
     return df
+
 
 
 def generate_content(new_window, progress_filename, remake_objectives_button_function):
@@ -147,15 +159,16 @@ def create_input(new_window, input_frame, question, objective_type, filename):
     )
     # only one difference between measurable is that it has one spinbox more so I need to prevent submit button overlapping spinbox
     if objective_type == "y/n":
-        submit_button.config(command=lambda x = filename, y = yes_no_var.get(): use_input(x, y))
+        submit_button.config(command=lambda x = filename, y = yes_no_var, z = new_window: use_input(z, x, y.get()))
         submit_button.grid(row=3, column=0, columnspan=2)
     else:
         tk.Label(
             input_frame, text="Type how many things of your objective you've done"
         ).grid(row=3, column=0, columnspan=2)
 
-        spinbox = tk.Spinbox(input_frame, from_=0, to=(2^30), increment=1).grid(row=4, column=0, columnspan=2)
-        submit_button.config(command=lambda x = filename, y = yes_no_var.get(), z = spinbox: use_input(x, y, z))
+        spinbox = tk.Spinbox(input_frame, from_=0, to=(2**30), increment=1)
+        spinbox.grid(row=4, column=0, columnspan=2)
+        submit_button.config(command=lambda x = filename, y = yes_no_var, z = spinbox, a = new_window: use_input(a, x, y.get(), z.get()))
         submit_button.grid(row=5, column=0, columnspan=2)
 
 
@@ -182,35 +195,42 @@ def calculate_current_streak(streak_column):
     return max_streak
 
 
-def update_missed(filename):
+def update_missed(filename, radio_input):
     df = pd.read_csv(filename)
-    missed_count = len(df) - df['days'].sum()
+    if radio_input == "No":
+        missed_count = df['missed'].sum() + 1
+    else:
+        missed_count = df['missed'].sum()
 
     total_days = len(df)
     print(total_days + 10)
     percentage = (total_days - missed_count) / total_days * 100
-    return [missed_count, percentage]
+    return percentage
 
 
-def use_input(filename, radio_input, spinbox_input=None):
+def use_input(new_window, filename, radio_input, spinbox_input=None):
     filename = filename + "_progress.csv"
     progress_df = pd.read_csv(filename)
-    print(progress_df)
-    print(radio_input)
+
     current_streak = calculate_current_streak(progress_df["streak"])
     # last_day = progress_df['days'].iloc[-1]
     new_day = 1
-    missed_count, percentage = update_missed(filename, radio_input)[0], update_missed(filename, radio_input)[1]
-
+    missed = 1 if radio_input == "No" else 0
+    percentage = update_missed(filename, radio_input)
     if spinbox_input != None:
-        done = spinbox_input.get()
-        new_row = pd.DataFrame({"days": [new_day], "streak": current_streak, "missed": missed_count, "percentage": percentage, "done":done})
+        done = spinbox_input
+        print(done)
+        new_row = pd.DataFrame({"days": [new_day], "streak": current_streak, "missed": missed, "percentage":percentage, "done":done})
+
     else:
-        new_row = pd.DataFrame({"days": [new_day], "streak": current_streak, "missed": missed_count, "percentage": percentage})
+        new_row = pd.DataFrame({"days": [new_day], "streak": current_streak, "missed": missed, "percentage":percentage})
 
     progress_df = progress_df.append(new_row, ignore_index=True)
     progress_df.to_csv(filename, index=False)
 
+    print(progress_df)
+    print(radio_input)
+    new_window.destroy()
 
 # this function creates folder for saves only if user has not done it before
 # def create_saves_folder():
