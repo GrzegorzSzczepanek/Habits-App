@@ -114,9 +114,9 @@ def generate_content(new_window, progress_filename, remake_objectives_button_fun
     question = pd.read_csv(progress_filename + ".csv")["question"].iloc[0]
 
     if pd.read_csv(progress_filename + ".csv")["objective type"].iloc[0] == "y/n":
-        create_input(new_window, input_frame, question, "y/n", filename)
+        create_input(new_window, input_frame, question, "y/n", progress_filename)
     else:
-        create_input(new_window, input_frame, question, "m")
+        create_input(new_window, input_frame, question, "m", progress_filename)
         # create_measurable_input(new_window, input_frame, question)
 
 
@@ -147,15 +147,15 @@ def create_input(new_window, input_frame, question, objective_type, filename):
     )
     # only one difference between measurable is that it has one spinbox more so I need to prevent submit button overlapping spinbox
     if objective_type == "y/n":
-        submit_button.config(command=lambda x = filename, y = yes_no_var.get: use_input(x))
+        submit_button.config(command=lambda x = filename, y = yes_no_var.get(): use_input(x, y))
         submit_button.grid(row=3, column=0, columnspan=2)
     else:
         tk.Label(
             input_frame, text="Type how many things of your objective you've done"
         ).grid(row=3, column=0, columnspan=2)
 
-        tk.Spinbox(input_frame, from_=0, to=2^31-1, increment=1).grid(row=4, column=0, columnspan=2)
-        submit_button.config(command=lambda x = filename, y = yes_no_var.get, z = "spinbox_value.get": use_input(x, y, z))
+        spinbox = tk.Spinbox(input_frame, from_=0, to=(2^30), increment=1).grid(row=4, column=0, columnspan=2)
+        submit_button.config(command=lambda x = filename, y = yes_no_var.get(), z = spinbox: use_input(x, y, z))
         submit_button.grid(row=5, column=0, columnspan=2)
 
 
@@ -172,8 +172,8 @@ def calculate_current_streak(streak_column):
     current_streak = 0
     max_streak = 0
 
-    for streak in streak_column:
-        if streak != 0:
+    for value in streak_column:
+        if value == 1:
             current_streak += 1
             max_streak = max(max_streak, current_streak)
         else:
@@ -182,13 +182,34 @@ def calculate_current_streak(streak_column):
     return max_streak
 
 
-def use_input(filename, radio_input, spinbox_input=None):
+def update_missed(filename):
     df = pd.read_csv(filename)
-    if spinbox_input == None:
-        #df['days']
-        pass
+    missed_count = len(df) - df['days'].sum()
+
+    total_days = len(df)
+    print(total_days + 10)
+    percentage = (total_days - missed_count) / total_days * 100
+    return [missed_count, percentage]
+
+
+def use_input(filename, radio_input, spinbox_input=None):
+    filename = filename + "_progress.csv"
+    progress_df = pd.read_csv(filename)
+    print(progress_df)
+    print(radio_input)
+    current_streak = calculate_current_streak(progress_df["streak"])
+    # last_day = progress_df['days'].iloc[-1]
+    new_day = 1
+    missed_count, percentage = update_missed(filename, radio_input)[0], update_missed(filename, radio_input)[1]
+
+    if spinbox_input != None:
+        done = spinbox_input.get()
+        new_row = pd.DataFrame({"days": [new_day], "streak": current_streak, "missed": missed_count, "percentage": percentage, "done":done})
     else:
-        pass
+        new_row = pd.DataFrame({"days": [new_day], "streak": current_streak, "missed": missed_count, "percentage": percentage})
+
+    progress_df = progress_df.append(new_row, ignore_index=True)
+    progress_df.to_csv(filename, index=False)
 
 
 # this function creates folder for saves only if user has not done it before

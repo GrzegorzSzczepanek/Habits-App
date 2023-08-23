@@ -1,4 +1,4 @@
-from create import generate_main_window_content  # add_objective, open_settings
+from create import generate_main_window_content
 from tkinter import *
 
 window = Tk()
