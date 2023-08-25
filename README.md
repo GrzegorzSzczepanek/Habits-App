@@ -11,8 +11,10 @@ The app is built using Pandas, os, glob, matplotlib and TkInter libraries.
 Ugly tbh
 
 ## Adding new objective to your plans
-![image](https://github.com/GrzegorzSzczepanek/Habits-App/assets/113286903/74c9f696-5ed0-4b6b-b1ce-4acf29f1137f)
-![image](https://github.com/GrzegorzSzczepanek/Habits-App/assets/113286903/d4f34ed7-a2d8-493d-a488-05d779f4cd38)
+![image](https://github.com/GrzegorzSzczepanek/Habits-App/assets/113286903/d39113dc-52f9-45a7-ab57-64879bc6e424)
+
+![image](https://github.com/GrzegorzSzczepanek/Habits-App/assets/113286903/35999595-6905-40f3-ae81-1579ded47dae)
+
 
 ## Checking your progress
 Even if you didn't met your goal you're still able to see your journey
