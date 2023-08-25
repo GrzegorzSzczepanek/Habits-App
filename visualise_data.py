@@ -93,10 +93,10 @@ def generate_plot(new_window, progress_filename):
 
 
 def generate_content(new_window, progress_filename, remake_objectives_button_function):
-
-    df = generate_plot(new_window, progress_filename)
-
-    streak = int(df.iloc[-1]["streak"])
+    progress_df = generate_plot(new_window, progress_filename)
+    df = pd.read_csv(progress_filename + ".csv")
+    new_window.title(df["name"].iloc[0])
+    streak = int(progress_df.iloc[-1]["streak"])
     streak_label = tk.Label(
         new_window,
         text=f"You are on {(streak)} day streak",
@@ -104,7 +104,7 @@ def generate_content(new_window, progress_filename, remake_objectives_button_fun
         fg="#000",
     ).grid(row=1, column=1, columnspan=4, padx=20, pady=20)
 
-    notes = pd.read_csv(progress_filename + ".csv")["notes"].iloc[0]
+    notes = df["notes"].iloc[0]
     notes_label = tk.Label(
         new_window,
         text=f"My notes:\n{notes}",
@@ -132,9 +132,11 @@ def generate_content(new_window, progress_filename, remake_objectives_button_fun
         # create_measurable_input(new_window, input_frame, question)
 
 
-def validate_entry_text():
-    pass
-
+def validate_entry_text(text):
+    if text.strip().isdigit():
+        return True
+    else:
+        return False
 
 def create_input(new_window, input_frame, question, objective_type, filename):
 
