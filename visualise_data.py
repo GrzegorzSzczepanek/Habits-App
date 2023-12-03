@@ -91,7 +91,6 @@ def generate_plot(new_window, progress_filename):
     return df
 
 
-
 def generate_content(new_window, progress_filename, remake_objectives_button_function):
     progress_df = generate_plot(new_window, progress_filename)
     df = pd.read_csv(progress_filename + ".csv")
@@ -116,7 +115,7 @@ def generate_content(new_window, progress_filename, remake_objectives_button_fun
         text="Delete this Objective",
         font=("Tahoma", 15),
         fg="#800",
-        command=lambda x = progress_filename, y = new_window, z = remake_objectives_button_function: delete_save_file(x, y, z)
+        command=lambda x=progress_filename, y=new_window, z=remake_objectives_button_function: delete_save_file(x, y, z)
     ).grid(row=1, column=7)
 
     input_frame = tk.Frame(new_window)
@@ -137,6 +136,7 @@ def validate_entry_text(text):
         return True
     else:
         return False
+
 
 def create_input(new_window, input_frame, question, objective_type, filename):
 
@@ -161,7 +161,7 @@ def create_input(new_window, input_frame, question, objective_type, filename):
     )
     # only one difference between measurable is that it has one spinbox more so I need to prevent submit button overlapping spinbox
     if objective_type == "y/n":
-        submit_button.config(command=lambda x = filename, y = yes_no_var, z = new_window: use_input(z, x, y.get()))
+        submit_button.config(command=lambda x=filename, y=yes_no_var, z=new_window: use_input(z, x, y.get()))
         submit_button.grid(row=3, column=0, columnspan=2)
     else:
         tk.Label(
@@ -170,7 +170,8 @@ def create_input(new_window, input_frame, question, objective_type, filename):
 
         spinbox = tk.Spinbox(input_frame, from_=0, to=(2**30), increment=1)
         spinbox.grid(row=4, column=0, columnspan=2)
-        submit_button.config(command=lambda x = filename, y = yes_no_var, z = spinbox, a = new_window: use_input(a, x, y.get(), z.get()))
+        submit_button.config(command=lambda x=filename, y=yes_no_var, z=spinbox,
+                             a=new_window: use_input(a, x, y.get(), z.get()))
         submit_button.grid(row=5, column=0, columnspan=2)
 
 
@@ -180,7 +181,7 @@ def delete_save_file(filename, window, remake_objectives_button_function):
     from tkinter import messagebox
     messagebox.showinfo("Success", f"{filename} has been deleted successfully.")
     window.destroy()
-    remake_objectives_button_function[0](remake_objectives_button_function[1],remake_objectives_button_function[2])
+    remake_objectives_button_function[0](remake_objectives_button_function[1], remake_objectives_button_function[2])
 
 
 def calculate_current_streak(streak_column):
@@ -219,19 +220,18 @@ def use_input(new_window, filename, radio_input, spinbox_input=None):
     new_day = 1
     missed = 1 if radio_input == "No" else 0
     percentage = update_missed(filename, radio_input)
-    if spinbox_input != None:
+    if spinbox_input is not None:
         done = spinbox_input
-        print(done)
-        new_row = pd.DataFrame({"days": [new_day], "streak": current_streak, "missed": missed, "percentage":percentage, "done":done})
+        new_row = pd.DataFrame({"days": [new_day], "streak": current_streak,
+                               "missed": missed, "percentage": percentage, "done": done})
 
     else:
-        new_row = pd.DataFrame({"days": [new_day], "streak": current_streak, "missed": missed, "percentage":percentage})
+        new_row = pd.DataFrame({"days": [new_day], "streak": current_streak,
+                               "missed": missed, "percentage": percentage})
 
-    progress_df = progress_df.append(new_row, ignore_index=True)
+    progress_df = pd.concat([progress_df, new_row], ignore_index=True)
     progress_df.to_csv(filename, index=False)
 
-    print(progress_df)
-    print(radio_input)
     new_window.destroy()
 
 # this function creates folder for saves only if user has not done it before

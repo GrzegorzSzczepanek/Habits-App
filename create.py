@@ -155,7 +155,7 @@ def add_measurable_objective():
         EntryWithPlaceholder(select_type_frame, "21:37/None"),
         EntryWithPlaceholder(select_type_frame, "Any useful info (max 100 characters)"),
         EntryWithPlaceholder(select_type_frame, "f.e Kilometers"),
-        OptionMenu(select_type_frame, clicked, *options),
+        tk.OptionMenu(select_type_frame, clicked, *options),
     ]
     for i in range(0, len(entries)):
         entries[i].grid(row=i, column=1)
@@ -222,9 +222,9 @@ def validate_input(*args):
             )
             break
 
-        if isinstance(entry, OptionMenu):
+        if isinstance(entry, tk.OptionMenu):
             correct_values.append(clicked.get())
-        elif isinstance(entry, Entry) and entry.get() in basic_values:
+        elif isinstance(entry, tk.Entry) and entry.get() in basic_values:
             messagebox.showerror(
                 "Incorrect values", "You need to create your own objectives"
             )
@@ -275,7 +275,7 @@ def validate_input(*args):
         #             "Incorrect values",
         #             "Notes should be shorter than 100 characters, including spaces and special characters",
         #         )
-        elif isinstance(entry, Entry):
+        elif isinstance(entry, tk.Entry):
             correct_values.append(entry.get())
         else:
             correct_values.append(entry)
