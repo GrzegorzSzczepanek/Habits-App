@@ -1,6 +1,6 @@
 import glob
 import pandas as pd
-from tkinter import *
+import tkinter as tk
 from tkinter import messagebox
 from tkinter import filedialog
 from visual_effects import *
@@ -44,10 +44,10 @@ def create_buttons_from_saves(center_frame, font):
     csv_file_saves = glob.glob("*.csv")
     # print(csv_file_saves)
     for index, i in enumerate(csv_file_saves):
-        if "progress" not in i :
+        if "progress" not in i:
             data = pd.read_csv(i)
             current_filename = data["name"][0]
-            btn = Button(
+            btn = tk.Button(
                 center_frame,
                 text=data["name"][0],
                 bg="#222",
@@ -61,7 +61,7 @@ def create_buttons_from_saves(center_frame, font):
 
 
 def create_starting_btns():
-    yes_no_objective_btn = Button(
+    yes_no_objective_btn = tk.Button(
         select_type_frame,
         text="YES/NO\nf.e. Did you wake up at 6AM",
         bg="#222",
@@ -69,7 +69,7 @@ def create_starting_btns():
         command=add_yes_no_objective,
     ).grid(row=0, sticky="ew")
 
-    measurable_objective_btn = Button(
+    measurable_objective_btn = tk.Button(
         select_type_frame,
         text="Measurable Objective\nf.e. How many book pages have you read today",
         bg="#222",
@@ -79,7 +79,7 @@ def create_starting_btns():
 
 
 def add_objective():
-    select_type_window = Toplevel()
+    select_type_window = tk.Toplevel()
     select_type_window.title("Add objective")
     #select_type_window.resizable(False, False)
     global select_type_frame
@@ -95,18 +95,18 @@ def add_yes_no_objective():
     _button_list[1].destroy()
 
     labels = [
-        Label(select_type_frame, text="Name of task"),
-        Label(select_type_frame, text="Question"),
-        Label(select_type_frame, text="Remainder"),
-        Label(select_type_frame, text="Notes"),
-        Label(select_type_frame, text="Frequency per week"),
+        tk.Label(select_type_frame, text="Name of task"),
+        tk.Label(select_type_frame, text="Question"),
+        tk.Label(select_type_frame, text="Remainder"),
+        tk.Label(select_type_frame, text="Notes"),
+        tk.Label(select_type_frame, text="Frequency per week"),
     ]
     for i in range(0, len(labels)):
         labels[i].grid(row=i, column=0)
 
     options = ["everyday", "every other day", "weekly"]
     global clicked
-    clicked = StringVar()
+    clicked = tk.StringVar()
 
     clicked.set("everyday")
 
@@ -115,15 +115,15 @@ def add_yes_no_objective():
         EntryWithPlaceholder(select_type_frame, "F.e. did you wake up early?"),
         EntryWithPlaceholder(select_type_frame, "18:00/None"),
         EntryWithPlaceholder(select_type_frame, "Any useful info (max 100 characters)"),
-        OptionMenu(select_type_frame, clicked, *options),
+        tk.OptionMenu(select_type_frame, clicked, *options),
     ]
     for i in range(0, len(entries)):
         entries[i].grid(row=i, column=1)
 
-    Button(select_type_frame, text="Back", command=get_back).grid(
+    tk.Button(select_type_frame, text="Back", command=get_back).grid(
         row=len(entries), column=0
     )
-    Button(select_type_frame, text="Add", command=use_input).grid(
+    tk.Button(select_type_frame, text="Add", command=use_input).grid(
         row=len(entries), column=1
     )
 
@@ -135,19 +135,19 @@ def add_measurable_objective():
     global entries
 
     labels = [
-        Label(select_type_frame, text="Name of task"),
-        Label(select_type_frame, text="Question"),
-        Label(select_type_frame, text="Remainder"),
-        Label(select_type_frame, text="Notes"),
-        Label(select_type_frame, text="Unit f.e kilometers"),
-        Label(select_type_frame, text="Frequency per week"),
+        tk.Label(select_type_frame, text="Name of task"),
+        tk.Label(select_type_frame, text="Question"),
+        tk.Label(select_type_frame, text="Remainder"),
+        tk.Label(select_type_frame, text="Notes"),
+        tk.Label(select_type_frame, text="Unit f.e kilometers"),
+        tk.Label(select_type_frame, text="Frequency per week"),
     ]
     for i in range(0, len(labels)):
         labels[i].grid(row=i, column=0)
 
     options = ["everyday", "every other day", "weekly"]
     global clicked
-    clicked = StringVar()
+    clicked = tk.StringVar()
     clicked.set("everyday")
     entries = [
         EntryWithPlaceholder(select_type_frame, "f.e Read pages of the book"),
@@ -160,10 +160,10 @@ def add_measurable_objective():
     for i in range(0, len(entries)):
         entries[i].grid(row=i, column=1)
 
-    Button(select_type_frame, text="Back", command=get_back).grid(
+    tk.Button(select_type_frame, text="Back", command=get_back).grid(
         row=len(entries), column=0
     )
-    Button(select_type_frame, text="Add", command=use_input).grid(
+    tk.Button(select_type_frame, text="Add", command=use_input).grid(
         row=len(entries), column=1
     )
 
@@ -303,21 +303,33 @@ def get_back():
 
 
 def open_settings():
-    settings_window = Toplevel()
+    settings_window = tk.Toplevel()
     settings_window.title("Settings")
     settings_window.grid_columnconfigure(0, weight=1)
     settings_window.geometry("250x500")
-    settings_label = Label(settings_window, text="Test Label")
+    settings_label = tk.Label(settings_window, text="Test Label")
 
-    night_mode_btn = Button(
+    night_mode_btn = tk.Button(
         settings_window, text="Night mode", command=change_theme
     ).grid(row=1, sticky="ew")
 
-    language_btn = Button(settings_window, text="Change language").grid(
+    language_btn = tk.Button(settings_window, text="Change language").grid(
         row=2, sticky="ew"
     )
 
 
-# this function creates folder for saves only if user has not done it before
-# create_saves_folder()
-# create_saves_folder()
+def get_location():
+    filetypes = (('All files', '*.*'),)
+    location = filedialog.askopenfilename(filetypes=filetypes, initialdir="/")
+    return location
+
+
+def create_saves_folder():
+    location = get_location()
+    filename = "habts_app_save.csv"
+    filepath = location + "/" + filename
+
+
+    # this function creates folder for saves only if user has not done it before
+    # create_saves_folder()
+    # create_saves_folder()
