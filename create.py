@@ -1,16 +1,23 @@
 import glob
 import pandas as pd
+import platform
 import tkinter as tk
+import os
 from tkinter import messagebox
 from tkinter import filedialog
 from visual_effects import *
 from visualise_data import create_save_file, open_window
 
 
-# saves_path = '/home/grzes/Documents/saves'
-# saves_path = '/home/grzes/Documents/saves'
-# I need to extract data from OptionMenu and validate other data there.
-# There needs to be a function to check if file with the name user provided already exists
+saves_path = ''
+if platform.system() == "Linux":
+    saves_path = '~/.local/share/habits-app/saves'
+    if not os.path.exists('~/.local/share/habits-app/saves'):
+        os.makedirs(saves_path, exist_ok=True)
+elif platform.system() == "Windows":
+    saves_path = os.path.join(os.path.expandvars('%APPDATA%'), 'habits-app', 'saves')
+    if not os.path.isdir():
+        os.makedirs(saves_path, exist_ok=True)
 
 
 def generate_main_window_content(window, height=700, width=250):
@@ -328,7 +335,6 @@ def create_saves_folder():
     location = get_location()
     filename = "habts_app_save.csv"
     filepath = location + "/" + filename
-
 
     # this function creates folder for saves only if user has not done it before
     # create_saves_folder()
