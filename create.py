@@ -10,16 +10,18 @@ from visualise_data import create_save_file, open_window
 
 
 def check_save_path():
-    saves_path = ''
-    if platform.system() == "Linux":
-        saves_path = '~/.local/share/habits-app/saves'
-        if not os.path.exists('~/.local/share/habits-app/saves'):
-            os.makedirs(saves_path, exist_ok=True)
-    elif platform.system() == "Windows":
-        saves_path = os.path.join(os.path.expandvars('%APPDATA%'), 'habits-app', 'saves')
-        if not os.path.isdir():
-            os.makedirs(saves_path, exist_ok=True)
+    # saves_path = ''
+    # if platform.system() == "Linux":
+    #     saves_path = '~/.local/share/habits-app/saves'
+    #     if not os.path.exists('~/.local/share/habits-app/saves'):
+    #         os.makedirs(saves_path, exist_ok=True)
+    # elif platform.system() == "Windows":
+    #     saves_path = os.path.join(os.path.expandvars('%APPDATA%'), 'habits-app', 'saves')
+    #     if not os.path.isdir():
+    #         os.makedirs(saves_path, exist_ok=True)
 
+    # Only for test purposes it's commented
+    saves_path = "./"
     return saves_path
 
 def generate_main_window_content(window, height=700, width=250):

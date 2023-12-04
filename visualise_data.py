@@ -6,12 +6,12 @@ import os as os
 from visual_effects import *
 
 
-def data_to_csv(data, file_path):
-    data.to_csv(filename, index=False)
-    obj_path = os.path.join(filename)
-    data.to_csv(filename, index=False)
+def data_to_csv(data, file_path, progress_filename):
+    data.to_csv(file_path, index=False)
+    obj_path = os.path.join(file_path)
+    data.to_csv(file_path, index=False)
 
-    df_basic_info = pd.read_csv(filename)
+    df_basic_info = pd.read_csv(file_path)
     df_progress_info = pd.DataFrame(
         columns=[
             "days",
@@ -53,7 +53,7 @@ def create_save_file(data, save_dir):
         )
         return
 
-    data_to_csv(data, file_path)
+    data_to_csv(data, file_path, progress_filename)
 
 
 def open_window(progress_filename, window, remake_objectives_button_function):
