@@ -6,18 +6,7 @@ import os as os
 from visual_effects import *
 
 
-def create_save_file(data):
-    # print(data)
-    filename = data["name"][0] + ".csv"
-    progress_filename = data["name"][0] + "_progress" + ".csv"
-
-    if os.path.isfile(filename) or os.path.isfile(progress_filename):
-        tk.messagebox.showerror(
-            "Task with such name already exists",
-            "Create task with unique name or delete previous one",
-        )
-        return
-
+def data_to_csv(data, file_path):
     data.to_csv(filename, index=False)
     obj_path = os.path.join(filename)
     data.to_csv(filename, index=False)
@@ -50,6 +39,21 @@ def create_save_file(data):
         ]
 
     progress_track_file = df_progress_info.to_csv(progress_filename, index=False)
+
+
+def create_save_file(data, save_dir):
+    filename = data["name"][0] + ".csv"
+    file_path = os.path.join(save_dir, filename)
+    progress_filename = data["name"][0] + "_progress" + ".csv"
+
+    if os.path.isfile(file_path) or os.path.isfile(progress_filename):
+        tk.messagebox.showerror(
+            "Task with such name already exists",
+            "Create task with unique name or delete previous one",
+        )
+        return
+
+    data_to_csv(data, file_path)
 
 
 def open_window(progress_filename, window, remake_objectives_button_function):
@@ -233,27 +237,3 @@ def use_input(new_window, filename, radio_input, spinbox_input=None):
     progress_df.to_csv(filename, index=False)
 
     new_window.destroy()
-
-# this function creates folder for saves only if user has not done it before
-# def create_saves_folder():
-#     if os.path.isdir("C:\\HbtsApp"):
-#         return
-#     else:
-#         check_path = os.path.join("C:\\", "HbtsApp")
-#         os.makedirs(check_path)
-#         source_directory = filedialog.askdirectory(title="Selected Directory will be used to save your data and settings")
-#         path = os.path.join(source_directory, "Saves")
-#         os.makedirs(path)
-#     return path
-
-
-# this function sets the saves folder arbitraily
-# def create_saves_folder():
-#     if os.path.isdir("C:\\HbtsApp"):
-#         return
-#     else:
-#         check_path = os.path.join("C:\\", "HbtsApp")
-#         os.makedirs(check_path)
-#         path = os.path.join(check_path, "Saves")
-#         os.makedirs(path)
-#     return path

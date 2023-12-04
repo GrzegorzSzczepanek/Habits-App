@@ -9,16 +9,18 @@ from visual_effects import *
 from visualise_data import create_save_file, open_window
 
 
-saves_path = ''
-if platform.system() == "Linux":
-    saves_path = '~/.local/share/habits-app/saves'
-    if not os.path.exists('~/.local/share/habits-app/saves'):
-        os.makedirs(saves_path, exist_ok=True)
-elif platform.system() == "Windows":
-    saves_path = os.path.join(os.path.expandvars('%APPDATA%'), 'habits-app', 'saves')
-    if not os.path.isdir():
-        os.makedirs(saves_path, exist_ok=True)
+def check_save_path():
+    saves_path = ''
+    if platform.system() == "Linux":
+        saves_path = '~/.local/share/habits-app/saves'
+        if not os.path.exists('~/.local/share/habits-app/saves'):
+            os.makedirs(saves_path, exist_ok=True)
+    elif platform.system() == "Windows":
+        saves_path = os.path.join(os.path.expandvars('%APPDATA%'), 'habits-app', 'saves')
+        if not os.path.isdir():
+            os.makedirs(saves_path, exist_ok=True)
 
+    return saves_path
 
 def generate_main_window_content(window, height=700, width=250):
     window.title("Habits app")
@@ -203,7 +205,8 @@ def use_input():
             ],
         )
 
-    create_save_file(obj_df)
+    objective_save_path = check_save_path()
+    create_save_file(obj_df, objective_save_path)
     create_buttons_from_saves(center_frame, font=("Tahoma", 20))
 
 
