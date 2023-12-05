@@ -10,19 +10,20 @@ from visualise_data import create_save_file, open_window
 
 
 def check_save_path():
-    # saves_path = ''
-    # if platform.system() == "Linux":
-    #     saves_path = '~/.local/share/habits-app/saves'
-    #     if not os.path.exists('~/.local/share/habits-app/saves'):
-    #         os.makedirs(saves_path, exist_ok=True)
-    # elif platform.system() == "Windows":
-    #     saves_path = os.path.join(os.path.expandvars('%APPDATA%'), 'habits-app', 'saves')
-    #     if not os.path.isdir():
-    #         os.makedirs(saves_path, exist_ok=True)
+    saves_path = ''
+    if platform.system() == "Linux":
+        home_dir = os.path.expanduser('~')
+        saves_path = os.path.join(home_dir, '.local', 'share', 'habits-app', 'saves')
+        if not os.path.exists(saves_path):
+            os.makedirs(saves_path)
+    elif platform.system() == "Windows":
+        saves_path = os.path.join(os.path.expandvars('%APPDATA%'), 'habits-app', 'saves')
+        if not os.path.isdir():
+            os.makedirs(saves_path, exist_ok=True)
 
-    # Only for test purposes it's commented
-    saves_path = "./"
+    # saves_path = "./"
     return saves_path
+
 
 def generate_main_window_content(window, height=700, width=250):
     window.title("Habits app")
@@ -53,7 +54,6 @@ def create_buttons_from_saves(center_frame, font):
     for button in center_frame.winfo_children():
         button.destroy()
     csv_file_saves = glob.glob("*.csv")
-    # print(csv_file_saves)
     for index, i in enumerate(csv_file_saves):
         if "progress" not in i:
             data = pd.read_csv(i)
@@ -92,7 +92,6 @@ def create_starting_btns():
 def add_objective():
     select_type_window = tk.Toplevel()
     select_type_window.title("Add objective")
-    #select_type_window.resizable(False, False)
     global select_type_frame
     select_type_frame = tk.Frame(select_type_window)
     select_type_frame.pack(fill="both", expand=True)
@@ -330,17 +329,17 @@ def open_settings():
     )
 
 
-def get_location():
-    filetypes = (('All files', '*.*'),)
-    location = filedialog.askopenfilename(filetypes=filetypes, initialdir="/")
-    return location
+# def get_location():
+#     filetypes = (('All files', '*.*'),)
+#     location = filedialog.askopenfilename(filetypes=filetypes, initialdir="/")
+#     return location
 
 
-def create_saves_folder():
-    location = get_location()
-    filename = "habts_app_save.csv"
-    filepath = location + "/" + filename
-
+# def create_saves_folder():
+#     location = get_location()
+#     filename = "habts_app_save.csv"
+#     filepath = location + "/" + filename
+#
     # this function creates folder for saves only if user has not done it before
     # create_saves_folder()
     # create_saves_folder()

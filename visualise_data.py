@@ -59,7 +59,7 @@ def create_save_file(data, save_dir):
 def open_window(progress_filename, window, remake_objectives_button_function):
     new_window = tk.Toplevel(window)
     new_window.title("New Window")
-    new_window.geometry("1000x700")
+    new_window.geometry("1200x700")
 
     global validate_cmd
     validate_cmd = window.register(validate_entry_text)
