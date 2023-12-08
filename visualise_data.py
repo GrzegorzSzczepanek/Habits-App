@@ -6,7 +6,7 @@ import os as os
 from visual_effects import *
 
 
-def data_to_csv(data, file_path, progress_filename):
+def data_to_csv(data, file_path, progress_file_name):
     data.to_csv(file_path, index=False)
     obj_path = os.path.join(file_path)
     data.to_csv(file_path, index=False)
@@ -38,13 +38,15 @@ def data_to_csv(data, file_path, progress_filename):
             df_progress_info["done"].sum() / sum(df_progress_info["days"])
         ]
 
-    progress_track_file = df_progress_info.to_csv(progress_filename, index=False)
+    progress_track_file = df_progress_info.to_csv(progress_file_name, index=False)
 
 
 def create_save_file(data, save_dir):
     filename = data["name"][0] + ".csv"
     file_path = os.path.join(save_dir, filename)
     progress_filename = data["name"][0] + "_progress" + ".csv"
+    progress_file_path = os.path.join(save_dir, progress_filename)
+
 
     if os.path.isfile(file_path) or os.path.isfile(progress_filename):
         tk.messagebox.showerror(
@@ -53,7 +55,7 @@ def create_save_file(data, save_dir):
         )
         return
 
-    data_to_csv(data, file_path, progress_filename)
+    data_to_csv(data, file_path, progress_file_path)
 
 
 def open_window(progress_filename, window, remake_objectives_button_function):

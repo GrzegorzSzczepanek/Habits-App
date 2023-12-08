@@ -53,7 +53,8 @@ def generate_main_window_content(window, height=700, width=250):
 def create_buttons_from_saves(center_frame, font):
     for button in center_frame.winfo_children():
         button.destroy()
-    csv_file_saves = glob.glob("*.csv")
+    csv_file_saves = glob.glob("~/.local/share/habits-app/saves/*.csv")
+    print(csv_file_saves)
     for index, i in enumerate(csv_file_saves):
         if "progress" not in i:
             data = pd.read_csv(i)
@@ -207,6 +208,7 @@ def use_input():
         )
 
     objective_save_path = check_save_path()
+    print(objective_save_path)
     create_save_file(obj_df, objective_save_path)
     create_buttons_from_saves(center_frame, font=("Tahoma", 20))
 
