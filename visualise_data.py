@@ -59,6 +59,7 @@ def create_save_file(data, save_dir):
 
 
 def open_window(progress_filename, window, remake_objectives_button_function):
+    print("\nopen window: " + progress_filename + "\n")
     new_window = tk.Toplevel(window)
     new_window.title("New Window")
     new_window.geometry("1200x700")

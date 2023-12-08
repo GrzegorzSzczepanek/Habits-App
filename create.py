@@ -53,11 +53,16 @@ def generate_main_window_content(window, height=700, width=250):
 def create_buttons_from_saves(center_frame, font):
     for button in center_frame.winfo_children():
         button.destroy()
-    csv_file_saves = glob.glob("~/.local/share/habits-app/saves/*.csv")
+
+    directory_path = os.path.expanduser("~/.local/share/habits-app/saves")
+    # Get a list of CSV file paths
+    csv_file_saves = glob.glob(os.path.join(directory_path, "*.csv"))
+
     print(csv_file_saves)
-    for index, i in enumerate(csv_file_saves):
-        if "progress" not in i:
-            data = pd.read_csv(i)
+    for index, csv_file in enumerate(csv_file_saves):
+        if "progress" not in csv_file:
+            print(csv_file)
+            data = pd.read_csv(csv_file)
             current_filename = data["name"][0]
             btn = tk.Button(
                 center_frame,
@@ -66,7 +71,7 @@ def create_buttons_from_saves(center_frame, font):
                 fg="#EEE",
                 pady=30,
                 font=font,
-                command=lambda x=current_filename: open_window(
+                command=lambda x=csv_file: open_window(
                     x, center_frame.winfo_toplevel(), [create_buttons_from_saves, center_frame, font]
                 ),
             ).grid(row=index, columnspan=2, sticky="we")
