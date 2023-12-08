@@ -59,7 +59,6 @@ def create_save_file(data, save_dir):
 
 
 def open_window(progress_filename, window, remake_objectives_button_function):
-    print("\nopen window: " + progress_filename + "\n")
     new_window = tk.Toplevel(window)
     new_window.title("New Window")
     new_window.geometry("1200x700")
@@ -76,7 +75,7 @@ def generate_plot(new_window, progress_filename):
     canvas.draw()
     canvas.get_tk_widget().grid(row=5, column=6, columnspan=3, rowspan=3)
 
-    df = pd.read_csv(progress_filename + "_progress.csv")
+    df = pd.read_csv(progress_filename.replace(".csv", "") + "_progress.csv")
 
     if df["objective_type"].iloc[0] == "y/n":
         ax.plot(df["percentage"][0:], label="Percent of days when you achieved your goal")
@@ -100,7 +99,7 @@ def generate_plot(new_window, progress_filename):
 
 def generate_content(new_window, progress_filename, remake_objectives_button_function):
     progress_df = generate_plot(new_window, progress_filename)
-    df = pd.read_csv(progress_filename + ".csv")
+    df = pd.read_csv(progress_filename)
     new_window.title(df["name"].iloc[0])
     streak = int(progress_df.iloc[-1]["streak"])
     streak_label = tk.Label(
@@ -128,10 +127,10 @@ def generate_content(new_window, progress_filename, remake_objectives_button_fun
     input_frame = tk.Frame(new_window)
     input_frame.grid(row=3, rowspan=6, column=1, columnspan=3)
 
-    filename = progress_filename.replace("_progress", "") + ".csv"
-    question = pd.read_csv(progress_filename + ".csv")["question"].iloc[0]
+    filename = progress_filename.replace("_progress", ".csv")
+    question = pd.read_csv(progress_filename)["question"].iloc[0]
 
-    if pd.read_csv(progress_filename + ".csv")["objective type"].iloc[0] == "y/n":
+    if pd.read_csv(progress_filename)["objective type"].iloc[0] == "y/n":
         create_input(new_window, input_frame, question, "y/n", progress_filename)
     else:
         create_input(new_window, input_frame, question, "m", progress_filename)
@@ -183,8 +182,8 @@ def create_input(new_window, input_frame, question, objective_type, filename):
 
 
 def delete_save_file(filename, window, remake_objectives_button_function):
-    os.remove(filename + ".csv")
-    os.remove(filename + "_progress.csv")
+    os.remove(filename)
+    os.remove(filename.replace(".csv", "_progress.csv"))
     from tkinter import messagebox
     messagebox.showinfo("Success", f"{filename} has been deleted successfully.")
     window.destroy()
@@ -213,13 +212,12 @@ def update_missed(filename, radio_input):
         missed_count = df['missed'].sum()
 
     total_days = len(df)
-    print(total_days + 10)
     percentage = (total_days - missed_count) / total_days * 100
     return percentage
 
 
 def use_input(new_window, filename, radio_input, spinbox_input=None):
-    filename = filename + "_progress.csv"
+    filename = filename.replace(".csv", "_progress.csv")
     progress_df = pd.read_csv(filename)
 
     current_streak = calculate_current_streak(progress_df["streak"])

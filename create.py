@@ -58,10 +58,8 @@ def create_buttons_from_saves(center_frame, font):
     # Get a list of CSV file paths
     csv_file_saves = glob.glob(os.path.join(directory_path, "*.csv"))
 
-    print(csv_file_saves)
     for index, csv_file in enumerate(csv_file_saves):
         if "progress" not in csv_file:
-            print(csv_file)
             data = pd.read_csv(csv_file)
             current_filename = data["name"][0]
             btn = tk.Button(
@@ -213,7 +211,6 @@ def use_input():
         )
 
     objective_save_path = check_save_path()
-    print(objective_save_path)
     create_save_file(obj_df, objective_save_path)
     create_buttons_from_saves(center_frame, font=("Tahoma", 20))
 
@@ -232,8 +229,6 @@ def validate_input(*args):
     correct_values = []
     i = 0
     for entry in entries:
-        # print(entry)
-
         if (i == 0 or i == 1) and len(entry.get().strip()) == 0:
             messagebox.showerror(
                 "Incorrect values", "Objective name and question can't be empty"
